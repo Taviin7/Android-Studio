@@ -1,11 +1,13 @@
 package com.example.first_app;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -29,6 +31,7 @@ public class MainActivity extends AppCompatActivity {
         //Declarando as variáveis do sistema
         Button btn_calcular = findViewById(R.id.btn_calcular);
         Button btn_limparCampos = findViewById(R.id.btn_limpar);
+        Button btn_voltar = findViewById(R.id.btn_voltar);
 
         EditText edNota1 = findViewById(R.id.ed_nota1);
         EditText edNota2 = findViewById(R.id.ed_nota2);
@@ -42,29 +45,35 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                double n1, n2, media;
-                int faltas;
-                String situacao;
+                // Verificação se os campos estão vazio
+                if (!edNota1.getText().toString().isEmpty() &&
+                        !edNota2.getText().toString().isEmpty() &&
+                        !edFaltas.getText().toString().isEmpty()) {
 
-                //Convertendo o texto para número
-                n1 = Double.parseDouble(edNota1.getText().toString());
-                n2 = Double.parseDouble(edNota2.getText().toString());
-                faltas = Integer.parseInt(edFaltas.getText().toString());
+                    // Convertendo os números
+                    double nota1 = Double.parseDouble(edNota1.getText().toString());
+                    double nota2 = Double.parseDouble(edNota2.getText().toString());
+                    int faltas = Integer.parseInt(edFaltas.getText().toString());
+                    double media = (nota1 + nota2) / 2;
 
-                media = (n1 + n2) / 2;
+                    tvMedia.setText(String.valueOf(media));
 
-                //Exibindo o resultado (Convertendo double para String)
-                tvMedia.setText(String.valueOf(media));
+                    if (media >= 6 && faltas <= 5) {
+                        tvSituacao.setText("Aprovado");
+                        tvSituacao.setTextColor(Color.GREEN);
+                    } else {
+                        tvSituacao.setText("Retido");
+                        tvSituacao.setTextColor(Color.RED);
+                    }
+                } else {
+                    //Mensagem de aviso para preencher os campos
+                    CharSequence text = "Preencha todos os campos!";
+                    int duration = Toast.LENGTH_SHORT;
 
-                // tvSituacao.setText("Aprovado".toString());
-                if (media >= 6 && faltas <= 5) {
-                    tvSituacao.setText("Aprovado");
-                    tvSituacao.setTextColor(Color.GREEN);
+                    Toast toast = Toast.makeText(MainActivity.this, text, duration);
+                    toast.show();
                 }
-                else {
-                    tvSituacao.setText("Retido");
-                    tvSituacao.setTextColor(Color.RED);
-                }
+
             }
         });
 
@@ -78,6 +87,15 @@ public class MainActivity extends AppCompatActivity {
                 tvMedia.setText("0.0");
                 tvSituacao.setText("Pendente");
                 tvSituacao.setTextColor(Color.GRAY);
+            }
+        });
+
+        btn_voltar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(MainActivity.this, LoginActivity.class);
+                startActivity(i);
+                finish();
             }
         });
     }

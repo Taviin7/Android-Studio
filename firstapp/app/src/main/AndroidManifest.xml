@@ -12,11 +12,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Firstapp">
         <activity
-            android:name=".MainActivity"
+            android:name=".LoginActivity"
             android:exported="false" />
         <activity
-            android:name=".SplachActivity"
+            android:name=".MainActivity"
             android:exported="false" />
+
         <activity
             android:name=".SplashActivity"
             android:exported="true">

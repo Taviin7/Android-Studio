@@ -21,7 +21,7 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.042" />
+        app:layout_constraintVertical_bias="0.097" />
 
     <TextView
         android:id="@+id/txt_nota1"
@@ -41,7 +41,7 @@
         android:id="@+id/txt_disciplina"
         android:layout_width="85dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="30dp"
         android:text="Disicplina"
         android:textAlignment="center"
         android:textSize="16sp"
@@ -213,5 +213,19 @@
         app:layout_constraintHorizontal_bias="0.502"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/txt_faltas" />
+
+    <Button
+        android:id="@+id/btn_voltar"
+        android:layout_width="80dp"
+        android:layout_height="46dp"
+        android:textAlignment="center"
+        app:icon="@android:drawable/ic_menu_revert"
+        app:iconSize="28dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.024"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.023" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
