@@ -3,6 +3,7 @@ package com.example.loteria;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Gravity;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridLayout;
@@ -73,6 +74,10 @@ public class QuinaActivity extends AppCompatActivity {
             List<Integer> jogo = GeradorLoteria.gerar(1,80,qtdNumeros);
             mostrarJogo(i, jogo);
         }
+
+        txtResultado.setVisibility(View.VISIBLE);
+        //edtQtdJogos.setText("");
+        //edtQtdNumeros.setText("");
     }
 
     //Metodo responsável por exibir um jogo gerado no GridLayout da interface.
@@ -83,7 +88,6 @@ public class QuinaActivity extends AppCompatActivity {
         titulo.setText("Jogo " + numeroDoJogo);
         titulo.setTextSize(16);
         titulo.setPadding(0,30,0,15);
-        titulo.setTextColor(Color.WHITE);
 
         // Faz o título ocupar todas as colunas do GridLayout
         GridLayout.LayoutParams tituloParams = new GridLayout.LayoutParams();
