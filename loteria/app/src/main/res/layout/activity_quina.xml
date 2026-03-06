@@ -44,7 +44,7 @@
             android:id="@+id/btnGerar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:color="#209869"
+            android:backgroundTint="#260085"
             android:text="Gerar Jogos" />
 
         <ScrollView
