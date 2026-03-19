@@ -31,7 +31,7 @@ public class MainActivity extends AppCompatActivity {
         btn_java.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(MainActivity.this, QuestionsJavaActivity.class);
+                Intent i = new Intent(MainActivity.this, JavaQuestionsActivity.class);
                 startActivity(i);
                 //finish();
             }
@@ -40,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
         btn_sql.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(MainActivity.this, QuestionsSqlActivity.class);
+                Intent i = new Intent(MainActivity.this, SqlQuestionsActivity.class);
                 startActivity(i);
             }
         });
@@ -48,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
         btn_so.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(MainActivity.this, QuestionsSOActivity.class);
+                Intent i = new Intent(MainActivity.this, SistemasOperacionaisQuestionsActivity.class);
                 startActivity(i);
             }
         });

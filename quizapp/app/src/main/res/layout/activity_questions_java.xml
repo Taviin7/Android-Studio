@@ -6,12 +6,13 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".QuestionsJavaActivity">
+    tools:context=".JavaQuestionsActivity">
 
     <ImageView
         android:id="@+id/img_javaLogo"
         android:layout_width="0dp"
         android:layout_height="150dp"
+        android:layout_marginTop="50dp"
         android:src="@drawable/java_symbol"
         android:scaleType="fitCenter"
         app:layout_constraintTop_toTopOf="parent"
@@ -31,7 +32,7 @@
         app:layout_constraintEnd_toEndOf="parent">
 
         <TextView
-            android:id="@+id/txt_question"
+            android:id="@+id/txt_questao"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Pergunta"
@@ -45,28 +46,28 @@
             android:layout_height="wrap_content">
 
             <RadioButton
-                android:id="@+id/radio_answer1"
+                android:id="@+id/rb_alternativa1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Alternativa 1"
                 android:layout_marginBottom="8dp"/>
 
             <RadioButton
-                android:id="@+id/radio_answer2"
+                android:id="@+id/rb_alternativa2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Alternativa 2"
                 android:layout_marginBottom="8dp"/>
 
             <RadioButton
-                android:id="@+id/radio_answer3"
+                android:id="@+id/rb_alternativa3"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Alternativa 3"
                 android:layout_marginBottom="8dp"/>
 
             <RadioButton
-                android:id="@+id/radio_answer4"
+                android:id="@+id/rb_alternativa4"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Alternativa 4"

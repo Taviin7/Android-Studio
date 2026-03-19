@@ -15,13 +15,13 @@
             android:name=".ResultActivity"
             android:exported="false" />
         <activity
-            android:name=".QuestionsSOActivity"
+            android:name=".SistemasOperacionaisQuestionsActivity"
             android:exported="false" />
         <activity
-            android:name=".QuestionsSqlActivity"
+            android:name=".SqlQuestionsActivity"
             android:exported="false" />
         <activity
-            android:name=".QuestionsJavaActivity"
+            android:name=".JavaQuestionsActivity"
             android:exported="false" />
         <activity
             android:name=".MainActivity"

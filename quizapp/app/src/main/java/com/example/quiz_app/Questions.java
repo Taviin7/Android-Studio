@@ -7,16 +7,16 @@ import java.util.List;
 
 public class Questions {
     private String question;
-    private List<String> answers = new ArrayList<>();
-    private int rightAnswer;
+    private List<String> alternativa = new ArrayList<>();
+    private int alternativaCorreta;
 
-    public Questions(String questions, Integer rightAnswer, String ... answers) {
+    public Questions(String questions, Integer alternativaCorreta, String ... alternativa) {
         this.question = questions;
-        this.rightAnswer = rightAnswer;
-        this.answers.add(answers[0]);
-        this.answers.add(answers[1]);
-        this.answers.add(answers[2]);
-        this.answers.add(answers[3]);
+        this.alternativaCorreta = alternativaCorreta;
+        this.alternativa.add(alternativa[0]);
+        this.alternativa.add(alternativa[1]);
+        this.alternativa.add(alternativa[2]);
+        this.alternativa.add(alternativa[3]);
     }
 
 
@@ -24,11 +24,11 @@ public class Questions {
         return question;
     }
 
-    public List<String> getAnswers() {
-        return answers;
+    public List<String> getAlternativa() {
+        return alternativa;
     }
 
-    public Integer getRightAnswer() {
-        return rightAnswer;
+    public Integer getAlternativaCorreta() {
+        return alternativaCorreta;
     }
 }
