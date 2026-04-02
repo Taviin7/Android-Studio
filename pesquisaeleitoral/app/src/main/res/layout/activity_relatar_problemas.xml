@@ -14,18 +14,21 @@
         android:orientation="vertical"
         android:padding="16dp">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Quais os principais problemas?"
-            android:textSize="18sp"
-            android:paddingBottom="12dp"/>
-
         <LinearLayout
             android:id="@+id/layoutProblemas"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical" />
+            android:orientation="vertical" >
+
+            <TextView
+                android:id="@+id/txt_titulo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="65dp"
+                android:paddingBottom="12dp"
+                android:text="Quais os principais problemas?"
+                android:textSize="18sp" />
+        </LinearLayout>
 
         <CheckBox
             android:id="@+id/cb_outro"

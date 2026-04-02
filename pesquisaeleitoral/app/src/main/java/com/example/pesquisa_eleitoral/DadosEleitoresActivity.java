@@ -11,6 +11,7 @@ import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresPermission;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.graphics.Insets;
@@ -33,11 +34,12 @@ public class DadosEleitoresActivity extends AppCompatActivity {
     private double latitude  = 0.0;
     private double longitude = 0.0;
 
+    @RequiresPermission(allOf = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION})
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_eleitores);
+        setContentView(R.layout.activity_dados_eleitores);
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
@@ -45,9 +47,9 @@ public class DadosEleitoresActivity extends AppCompatActivity {
             return insets;
         });
 
-        etNome    = findViewById(R.id.etNome);
+        etNome = findViewById(R.id.etNome);
         etCelular = findViewById(R.id.etCelular);
-        tvGps     = findViewById(R.id.tvGps);
+        tvGps = findViewById(R.id.tvGps);
 
         fusedClient = LocationServices.getFusedLocationProviderClient(this);
         obterLocalizacao();
@@ -56,10 +58,9 @@ public class DadosEleitoresActivity extends AppCompatActivity {
         btn_salvar.setOnClickListener(v -> salvar());
     }
 
-    // ---------------------------------------------------------------
     // GPS
-    // ---------------------------------------------------------------
 
+    @RequiresPermission(anyOf = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION})
     private void obterLocalizacao() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
@@ -71,21 +72,23 @@ public class DadosEleitoresActivity extends AppCompatActivity {
         buscarLocalizacao();
     }
 
+    @RequiresPermission(anyOf = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION})
     private void buscarLocalizacao() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) return;
 
-        //fusedClient.getLastLocation().addOnSuccessListener(location -> {
-            //if (location != null) {
-             //   latitude  = location.getLatitude();
-             //   longitude = location.getLongitude();
-            //    tvGps.setText(String.format("GPS: %.5f, %.5f", latitude, longitude));
-            //} else {
-            //    tvGps.setText("GPS: aguardando sinal...");
-            //}
-        //});
+        fusedClient.getLastLocation().addOnSuccessListener(location -> {
+            if (location != null) {
+                latitude  = location.getLatitude();
+                longitude = location.getLongitude();
+                tvGps.setText(String.format("GPS: %.5f, %.5f", latitude, longitude));
+            } else {
+                tvGps.setText("GPS: aguardando sinal...");
+            }
+        });
     }
 
+    @RequiresPermission(allOf = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION})
     @Override
     public void onRequestPermissionsResult(int requestCode,
                                            @NonNull String[] permissions,
@@ -100,9 +103,6 @@ public class DadosEleitoresActivity extends AppCompatActivity {
         }
     }
 
-    // ---------------------------------------------------------------
-    // Salvar
-    // ---------------------------------------------------------------
 
     private void salvar() {
         String nome    = etNome.getText().toString().trim();
@@ -127,9 +127,8 @@ public class DadosEleitoresActivity extends AppCompatActivity {
         entrevista.setLatitude(latitude);
         entrevista.setLongitude(longitude);
 
-        // Aqui você salva: lista estática, banco local (Room) ou envia para API
-        // Exemplo com lista estática:
-        // ListaEntrevistas.getInstance().add(entrevista);
+        // Salvando: lista estática ou  banco local (Room)
+        ListaEntrevistas.getInstance().add(entrevista);
 
         Toast.makeText(this, "Entrevista salva com sucesso!", Toast.LENGTH_SHORT).show();
 

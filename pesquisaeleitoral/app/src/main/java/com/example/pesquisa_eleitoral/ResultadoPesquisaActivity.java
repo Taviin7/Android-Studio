@@ -25,7 +25,7 @@ import java.util.Map;
 
 public class ResultadoPesquisaActivity extends AppCompatActivity {
 
-    // Cores do gráfico — adicione mais se tiver mais candidatos
+    // Cores do gráfico
     private static final int[] CORES = {
             Color.parseColor("#2196F3"), // azul
             Color.parseColor("#F44336"), // vermelho
@@ -55,7 +55,7 @@ public class ResultadoPesquisaActivity extends AppCompatActivity {
         List<Entrevista> entrevistas = ListaEntrevistas.getInstance().getAll();
         int total = entrevistas.size();
 
-        // --- Total de entrevistados ---
+        // Total de entrevistados
         TextView tvTotal = new TextView(this);
         tvTotal.setText("Quant. de pessoas entrevistadas: " + total);
         tvTotal.setTextSize(15f);
@@ -72,28 +72,28 @@ public class ResultadoPesquisaActivity extends AppCompatActivity {
             return;
         }
 
-        // --- Contagem de votos por candidato ---
+        // Contagem de votos por candidato
         Map<Integer, Integer> contagem = new HashMap<>();
         for (Entrevista e : entrevistas) {
             int id = e.getCandidatoId();
             contagem.put(id, contagem.getOrDefault(id, 0) + 1);
         }
 
-        // --- Monta lista ordenada por votos ---
+        // Monta lista ordenada por votos
         List<int[]> itens = new ArrayList<>(); // [candidatoId, votos]
         for (Map.Entry<Integer, Integer> entry : contagem.entrySet()) {
             itens.add(new int[]{entry.getKey(), entry.getValue()});
         }
         itens.sort((a, b) -> b[1] - a[1]); // mais votado primeiro
 
-        // --- Título votos ---
+        // Título votos
         TextView tvTitulo = new TextView(this);
         tvTitulo.setText("Quant. de votos para cada candidato:");
         tvTitulo.setTextSize(14f);
         tvTitulo.setPadding(0, 0, 0, dpToPx(8));
         container.addView(tvTitulo);
 
-        // --- Linhas de percentual ---
+        // Linhas de percentual
         List<String> labels = new ArrayList<>();
         List<Float> percentuais = new ArrayList<>();
         List<Integer> cores = new ArrayList<>();
@@ -119,7 +119,7 @@ public class ResultadoPesquisaActivity extends AppCompatActivity {
             corIndex++;
         }
 
-        // --- Gráfico de pizza ---
+        // Gráfico de pizza
         TextView tvGrafico = new TextView(this);
         tvGrafico.setText("\nVotos");
         tvGrafico.setTextSize(14f);
@@ -133,15 +133,12 @@ public class ResultadoPesquisaActivity extends AppCompatActivity {
         pizza.setLayoutParams(pizzaParams);
         container.addView(pizza);
 
-        // --- Legenda ---
+        // Legenda
         for (int i = 0; i < labels.size(); i++) {
             container.addView(criarLegenda(labels.get(i), cores.get(i)));
         }
     }
 
-    // ---------------------------------------------------------------
-    // View customizada: gráfico de pizza desenhado com Canvas
-    // ---------------------------------------------------------------
     static class PizzaView extends View {
         private final List<String> labels;
         private final List<Float> percentuais;
@@ -188,9 +185,7 @@ public class ResultadoPesquisaActivity extends AppCompatActivity {
         }
     }
 
-    // ---------------------------------------------------------------
     // Legenda colorida
-    // ---------------------------------------------------------------
     private LinearLayout criarLegenda(String label, int cor) {
         LinearLayout row = new LinearLayout(this);
         row.setOrientation(LinearLayout.HORIZONTAL);
@@ -217,17 +212,15 @@ public class ResultadoPesquisaActivity extends AppCompatActivity {
         return row;
     }
 
-    // ---------------------------------------------------------------
     // Helpers
-    // ---------------------------------------------------------------
     private String resolverCandidato(int id) {
         if (id == PesquisaEstimuladaActivity.ID_BRANCO)  return "Branco";
         if (id == PesquisaEstimuladaActivity.ID_NULO)    return "Nulo";
         if (id == PesquisaEstimuladaActivity.ID_NAO_SEI) return "Não sei";
         switch (id) {
             case 1: return "Jorge Amado";
-            case 2: return "Candidato 2";
-            case 3: return "Candidato 3";
+            case 2: return "Caio Cássio";
+            case 3: return "Luiza Albergue";
             default: return "ID " + id;
         }
     }
