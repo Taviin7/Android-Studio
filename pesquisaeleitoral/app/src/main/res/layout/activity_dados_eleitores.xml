@@ -5,47 +5,47 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".RelatarProblemasActivity">
+    tools:context=".DadosEleitoresActivity">
 
     <LinearLayout
         android:id="@+id/container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:padding="16dp">
+        android:padding="16dp"
+        tools:layout_editor_absoluteX="-123dp"
+        tools:layout_editor_absoluteY="-239dp">
 
         <TextView
-            android:layout_width="wrap_content"
+            android:id="@+id/tvGps"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Quais os principais problemas?"
-            android:textSize="18sp"
-            android:paddingBottom="12dp"/>
-
-        <LinearLayout
-            android:id="@+id/layoutProblemas"
-            android:layout_width="374dp"
-            android:layout_height="500dp"
-            android:orientation="vertical" />
-
-        <CheckBox
-            android:id="@+id/cb_outro"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Outro"/>
+            android:paddingBottom="12dp"
+            android:text="GPS: obtendo localização..."
+            android:textColor="#888888"
+            android:textSize="12sp" />
 
         <EditText
-            android:id="@+id/edt_outro"
+            android:id="@+id/etNome"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Digite outro problema"
-            android:visibility="gone"/>
+            android:layout_marginBottom="12dp"
+            android:hint="Nome do entrevistado"
+            android:inputType="textPersonName" />
+
+        <EditText
+            android:id="@+id/etCelular"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp"
+            android:hint="Celular"
+            android:inputType="phone" />
 
         <Button
-            android:id="@+id/btn_proximo"
+            android:id="@+id/btn_salvar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Próximo"
-            android:layout_marginTop="20dp"/>
+            android:text="Salvar entrevista" />
 
     </LinearLayout>
 

@@ -12,6 +12,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Pesquisaeleitoral">
         <activity
+            android:name=".DadosEleitoresActivity"
+            android:exported="false" />
+        <activity
             android:name=".EleitoresActivity"
             android:exported="false" />
         <activity
