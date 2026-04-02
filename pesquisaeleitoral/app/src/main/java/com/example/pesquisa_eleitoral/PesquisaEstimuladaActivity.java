@@ -41,26 +41,28 @@ public class PesquisaEstimuladaActivity extends AppCompatActivity {
         RadioGroup radioGroup = findViewById(R.id.radioGroupCandidatos);
 
         List<Candidato> candidatos = new ArrayList<>();
-        candidatos.add(new Candidato(1, "Jorge Amado",  "Partido X"));
-        candidatos.add(new Candidato(2, "Candidato 2",  "Partido Y"));
-        candidatos.add(new Candidato(3, "Candidato 3",  "Partido Z"));
+        candidatos.add(new Candidato(1, "Jorge Amado",  "Partido ML"));
+        candidatos.add(new Candidato(2, "Caio Cássio",  "Partido AMZ"));
+        candidatos.add(new Candidato(3, "Luiza Albergue",  "Partido ALX"));
 
         // Especiais — IDs -100, -200, -300 para não colidir com o -1 do Android
         candidatos.add(new Candidato(ID_BRANCO,  "Branco",  ""));
         candidatos.add(new Candidato(ID_NULO,    "Nulo",    ""));
         candidatos.add(new Candidato(ID_NAO_SEI, "Não sei", ""));
 
+        // Populando os radios button com os candidatos
         for (Candidato c : candidatos) {
             RadioButton rb = new RadioButton(this);
 
             rb.setId(View.generateViewId()); // ID interno do Android
-            rb.setTag(c.getId());            // seu ID real
+            rb.setTag(c.getId());            // ID real
 
             rb.setText(c.getNome() +
                     (c.getPartido().isEmpty() ? "" : " - " + c.getPartido()));
 
             radioGroup.addView(rb);
         }
+
 
         Button btn_confirmar = findViewById(R.id.btn_confirmar);
         btn_confirmar.setOnClickListener(v -> {
@@ -75,6 +77,7 @@ public class PesquisaEstimuladaActivity extends AppCompatActivity {
             RadioButton selected = findViewById(selectedId);
             int candidatoId = (int) selected.getTag();
 
+            // "Salvando" a entrevista
             Entrevista entrevista = new Entrevista(
                     candidatoId,
                     new ArrayList<>(),

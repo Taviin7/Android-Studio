@@ -34,7 +34,7 @@ public class RelatarProblemasActivity extends AppCompatActivity {
         edtOutro = findViewById(R.id.edt_outro);
         Button btn = findViewById(R.id.btn_proximo);
 
-        // 🔥 Recupera a entrevista
+        // Recupera a entrevista
         entrevista = (Entrevista) getIntent().getSerializableExtra("entrevista");
 
         // Lista de problemas
@@ -54,7 +54,7 @@ public class RelatarProblemasActivity extends AppCompatActivity {
             layoutProblemas.addView(cb);
         }
 
-        // 🔥 Lógica do "Outro"
+        // Lógica do "Outro"
         cbOutro.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (isChecked) {
                 edtOutro.setVisibility(View.VISIBLE);
@@ -64,7 +64,7 @@ public class RelatarProblemasActivity extends AppCompatActivity {
             }
         });
 
-        // 🔥 Botão próximo
+        // Botão próximo
         btn.setOnClickListener(v -> {
 
             List<String> selecionados = new ArrayList<>();
@@ -82,7 +82,7 @@ public class RelatarProblemasActivity extends AppCompatActivity {
                 }
             }
 
-            // 🔥 Trata "Outro"
+            // Trata "Outro", validando se há texto
             if (cbOutro.isChecked()) {
                 String outroTexto = edtOutro.getText().toString().trim();
 
@@ -94,7 +94,7 @@ public class RelatarProblemasActivity extends AppCompatActivity {
                 selecionados.add(outroTexto);
             }
 
-            // 🔥 Validação geral
+            // Validação geral
             if (selecionados.isEmpty()) {
                 Toast.makeText(this, "Selecione ao menos um problema", Toast.LENGTH_SHORT).show();
                 return;

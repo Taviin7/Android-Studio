@@ -23,15 +23,15 @@
 
         <LinearLayout
             android:id="@+id/layoutProblemas"
-            android:layout_width="374dp"
-            android:layout_height="500dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="vertical" />
 
         <CheckBox
             android:id="@+id/cb_outro"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Outro"/>
+            android:text="Outro" />
 
         <EditText
             android:id="@+id/edt_outro"
@@ -45,7 +45,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Próximo"
-            android:layout_marginTop="20dp"/>
+            android:layout_marginTop="20dp"
+            android:backgroundTint="#302681"
+            android:textColor="@color/white" />
 
     </LinearLayout>
 

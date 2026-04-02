@@ -45,7 +45,9 @@
             android:id="@+id/btn_salvar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Salvar entrevista" />
+            android:text="Salvar entrevista"
+            android:backgroundTint="#302681"
+            android:textColor="@color/white" />
 
     </LinearLayout>
 

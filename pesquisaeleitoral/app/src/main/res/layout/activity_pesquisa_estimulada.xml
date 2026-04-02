@@ -50,7 +50,9 @@
             android:id="@+id/btn_confirmar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Confirmar voto"/>
+            android:text="Confirmar voto"
+            android:backgroundTint="#302681"
+            android:textColor="@color/white" />
 
     </LinearLayout>
 
