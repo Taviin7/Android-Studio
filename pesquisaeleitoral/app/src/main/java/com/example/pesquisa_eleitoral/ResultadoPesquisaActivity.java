@@ -59,6 +59,7 @@ public class ResultadoPesquisaActivity extends AppCompatActivity {
         TextView tvTotal = new TextView(this);
         tvTotal.setText("Quant. de pessoas entrevistadas: " + total);
         tvTotal.setTextSize(15f);
+        tvTotal.setTextColor(getResources().getColor(R.color.black));
         tvTotal.setTypeface(null, android.graphics.Typeface.BOLD);
         tvTotal.setPadding(0, 0, 0, dpToPx(16));
         container.addView(tvTotal);
@@ -67,6 +68,7 @@ public class ResultadoPesquisaActivity extends AppCompatActivity {
             TextView tvVazio = new TextView(this);
             tvVazio.setText("Nenhuma entrevista registrada ainda.");
             tvVazio.setTextSize(14f);
+            tvVazio.setTextColor(getResources().getColor(R.color.black));
             tvVazio.setGravity(Gravity.CENTER);
             container.addView(tvVazio);
             return;
@@ -90,6 +92,7 @@ public class ResultadoPesquisaActivity extends AppCompatActivity {
         TextView tvTitulo = new TextView(this);
         tvTitulo.setText("Quant. de votos para cada candidato:");
         tvTitulo.setTextSize(14f);
+        tvTitulo.setTextColor(getResources().getColor(R.color.black));
         tvTitulo.setPadding(0, 0, 0, dpToPx(8));
         container.addView(tvTitulo);
 
@@ -123,6 +126,7 @@ public class ResultadoPesquisaActivity extends AppCompatActivity {
         TextView tvGrafico = new TextView(this);
         tvGrafico.setText("\nVotos");
         tvGrafico.setTextSize(14f);
+        tvGrafico.setTextColor(getResources().getColor(R.color.black));
         tvGrafico.setTypeface(null, android.graphics.Typeface.BOLD);
         container.addView(tvGrafico);
 
@@ -207,6 +211,8 @@ public class ResultadoPesquisaActivity extends AppCompatActivity {
         TextView tv = new TextView(this);
         tv.setText(label);
         tv.setTextSize(12f);
+        tv.setTextColor(getResources().getColor(R.color.black));
+
         row.addView(tv);
 
         return row;

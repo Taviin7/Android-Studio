@@ -38,6 +38,7 @@ public class EleitoresActivity extends AppCompatActivity {
             TextView tv = new TextView(this);
             tv.setText("Nenhuma entrevista registrada ainda.");
             tv.setTextSize(14f);
+            tv.setTextColor(getResources().getColor(R.color.black));
             tv.setGravity(Gravity.CENTER);
             tv.setPadding(0, 80, 0, 0);
             container.addView(tv);
@@ -91,6 +92,7 @@ public class EleitoresActivity extends AppCompatActivity {
         TextView tv = new TextView(this);
         tv.setText(texto);
         tv.setTextSize(13f);
+        tv.setTextColor(getResources().getColor(R.color.black));
         if (negrito) tv.setTypeface(null, android.graphics.Typeface.BOLD);
         tv.setPadding(0, dpToPx(2), 0, dpToPx(2));
         return tv;
@@ -101,8 +103,8 @@ public class EleitoresActivity extends AppCompatActivity {
         if (id == PesquisaEstimuladaActivity.ID_NULO)    return "Nulo";
         if (id == PesquisaEstimuladaActivity.ID_NAO_SEI) return "Não sei";
 
-        // Busca na lista de candidatos que você define na PesquisaEstimuladaActivity
-        // Se tiver um Repositorio/lista global, use aqui. Caso contrário:
+        // Busca na lista de candidatos que definido na PesquisaEstimuladaActivity
+        // Se tiver um Repositorio/lista global, usaria aqui. Caso contrário:
         switch (id) {
             case 1: return "Jorge Amado";
             case 2: return "Candidato 2";
