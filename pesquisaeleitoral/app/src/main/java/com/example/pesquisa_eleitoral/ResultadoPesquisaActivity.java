@@ -1,237 +1,155 @@
 package com.example.pesquisa_eleitoral;
 
-import android.content.Context;
-import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.RectF;
 import android.os.Bundle;
-import android.view.Gravity;
-import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
+
+import com.github.mikephil.charting.charts.HorizontalBarChart;
+import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.components.YAxis;
+import com.github.mikephil.charting.data.BarData;
+import com.github.mikephil.charting.data.BarDataSet;
+import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
+import com.github.mikephil.charting.formatter.ValueFormatter;
+import com.github.mikephil.charting.utils.ColorTemplate;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
 public class ResultadoPesquisaActivity extends AppCompatActivity {
 
-    // Cores do gráfico
-    private static final int[] CORES = {
-            Color.parseColor("#2196F3"), // azul
-            Color.parseColor("#F44336"), // vermelho
-            Color.parseColor("#4CAF50"), // verde
-            Color.parseColor("#FF9800"), // laranja
-            Color.parseColor("#9C27B0"), // roxo
-            Color.parseColor("#009688"), // teal
-            Color.parseColor("#795548"), // marrom  (Nulo)
-            Color.parseColor("#9E9E9E"), // cinza   (Branco)
-            Color.parseColor("#607D8B"), // azul-cinza (Não sei)
-    };
+    private LinearLayout container;
+    private HorizontalBarChart barChart;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_resultado_pesquisa);
 
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
+        container = findViewById(R.id.containerResultado);
+        barChart = new HorizontalBarChart(this);
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT, 800); // 800px de altura
+        barChart.setLayoutParams(lp);
 
-        LinearLayout container = findViewById(R.id.containerResultado);
+        carregarDados();
+    }
 
-        List<Entrevista> entrevistas = ListaEntrevistas.getInstance().getAll();
-        int total = entrevistas.size();
+    private void carregarDados() {
+        // RODAR EM BACKGROUND (Obrigatório para o Room)
+        new Thread(() -> {
+            AppDatabase db = AppDatabase.getInstance(this);
 
-        // Total de entrevistados
+            // 1. Busca total de entrevistas (eleitores)
+            int totalEntrevistas = db.entrevistaDao().buscarTodas().size();
+
+            // 2. Busca contagem de votos (sigilosos)
+            List<Voto.ContarVotos> itens = db.votoDAO().contarVotos();
+
+            // Volta para a UI Thread para desenhar
+            runOnUiThread(() -> {
+                exibirResultados(totalEntrevistas, itens);
+            });
+        }).start();
+    }
+
+    private void exibirResultados(int totalEntrevistas, List<Voto.ContarVotos> itens) {
+        container.removeAllViews();
+
+        // Texto do Total
         TextView tvTotal = new TextView(this);
-        tvTotal.setText("Quant. de pessoas entrevistadas: " + total);
-        tvTotal.setTextSize(15f);
-        tvTotal.setTextColor(getResources().getColor(R.color.black));
-        tvTotal.setTypeface(null, android.graphics.Typeface.BOLD);
-        tvTotal.setPadding(0, 0, 0, dpToPx(16));
+        tvTotal.setText("Total de entrevistados: " + totalEntrevistas);
+        tvTotal.setTextSize(18f);
         container.addView(tvTotal);
 
-        if (total == 0) {
+        if (itens.isEmpty()) {
             TextView tvVazio = new TextView(this);
-            tvVazio.setText("Nenhuma entrevista registrada ainda.");
-            tvVazio.setTextSize(14f);
-            tvVazio.setTextColor(getResources().getColor(R.color.black));
-            tvVazio.setGravity(Gravity.CENTER);
+            tvVazio.setText("\nNenhum voto registrado.");
             container.addView(tvVazio);
             return;
         }
 
-        // Contagem de votos por candidato
-        Map<Integer, Integer> contagem = new HashMap<>();
-        for (Entrevista e : entrevistas) {
-            int id = e.getCandidatoId();
-            contagem.put(id, contagem.getOrDefault(id, 0) + 1);
-        }
-
-        // Monta lista ordenada por votos
-        List<int[]> itens = new ArrayList<>(); // [candidatoId, votos]
-        for (Map.Entry<Integer, Integer> entry : contagem.entrySet()) {
-            itens.add(new int[]{entry.getKey(), entry.getValue()});
-        }
-        itens.sort((a, b) -> b[1] - a[1]); // mais votado primeiro
-
-        // Título votos
-        TextView tvTitulo = new TextView(this);
-        tvTitulo.setText("Quant. de votos para cada candidato:");
-        tvTitulo.setTextSize(14f);
-        tvTitulo.setTextColor(getResources().getColor(R.color.black));
-        tvTitulo.setPadding(0, 0, 0, dpToPx(8));
-        container.addView(tvTitulo);
-
-        // Linhas de percentual
+        // Preparar dados para o gráfico de barras
+        List<BarEntry> entries = new ArrayList<>();
         List<String> labels = new ArrayList<>();
-        List<Float> percentuais = new ArrayList<>();
-        List<Integer> cores = new ArrayList<>();
-        int corIndex = 0;
 
-        for (int[] item : itens) {
-            int id    = item[0];
-            int votos = item[1];
-            float pct = (votos * 100f) / total;
+        for (int i = 0; i < itens.size(); i++) {
+            Voto.ContarVotos item = itens.get(i);
+            String nomeCandidato = resolverCandidato(item.candidatoId);
+            float pct = (totalEntrevistas > 0) ? (item.total * 100f) / totalEntrevistas : 0f;
 
-            String label = resolverCandidato(id);
-            labels.add(label);
-            percentuais.add(pct);
-            cores.add(CORES[corIndex % CORES.length]);
+            // Invertemos a ordem para que o primeiro da lista apareça no topo
+            entries.add(new BarEntry(i, pct));
+            labels.add(nomeCandidato);
 
+            // Adiciona legenda em texto abaixo
             TextView tvLinha = new TextView(this);
             tvLinha.setText(String.format(Locale.getDefault(),
-                    "%s — %d voto(s) — %.1f%%", label, votos, pct));
-            tvLinha.setTextSize(13f);
-            tvLinha.setPadding(0, dpToPx(2), 0, dpToPx(2));
+                    "%s: %d votos (%.1f%%)", nomeCandidato, item.total, pct));
             container.addView(tvLinha);
-
-            corIndex++;
         }
 
-        // Gráfico de pizza
-        TextView tvGrafico = new TextView(this);
-        tvGrafico.setText("\nVotos");
-        tvGrafico.setTextSize(14f);
-        tvGrafico.setTextColor(getResources().getColor(R.color.black));
-        tvGrafico.setTypeface(null, android.graphics.Typeface.BOLD);
-        container.addView(tvGrafico);
-
-        PizzaView pizza = new PizzaView(this, labels, percentuais, cores);
-        LinearLayout.LayoutParams pizzaParams = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT, dpToPx(280));
-        pizzaParams.setMargins(0, dpToPx(8), 0, dpToPx(16));
-        pizza.setLayoutParams(pizzaParams);
-        container.addView(pizza);
-
-        // Legenda
-        for (int i = 0; i < labels.size(); i++) {
-            container.addView(criarLegenda(labels.get(i), cores.get(i)));
-        }
-    }
-
-    static class PizzaView extends View {
-        private final List<String> labels;
-        private final List<Float> percentuais;
-        private final List<Integer> cores;
-        private final Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        private final Paint textPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-
-        PizzaView(Context ctx, List<String> labels, List<Float> pcts, List<Integer> cores) {
-            super(ctx);
-            this.labels      = labels;
-            this.percentuais = pcts;
-            this.cores       = cores;
-            textPaint.setColor(Color.WHITE);
-            textPaint.setTextSize(32f);
-            textPaint.setTextAlign(Paint.Align.CENTER);
-        }
-
-        @Override
-        protected void onDraw(Canvas canvas) {
-            super.onDraw(canvas);
-            int w = getWidth(), h = getHeight();
-            float raio  = Math.min(w, h) * 0.42f;
-            float cx    = w * 0.5f;
-            float cy    = h * 0.5f;
-            RectF oval  = new RectF(cx - raio, cy - raio, cx + raio, cy + raio);
-
-            float angulo = -90f; // começa do topo
-            for (int i = 0; i < percentuais.size(); i++) {
-                float sweep = percentuais.get(i) * 3.6f; // % → graus
-                paint.setColor(cores.get(i));
-                canvas.drawArc(oval, angulo, sweep, true, paint);
-
-                // Percentual dentro da fatia (só se fatia >= 5%)
-                if (percentuais.get(i) >= 5f) {
-                    double mid = Math.toRadians(angulo + sweep / 2f);
-                    float tx = cx + (float)(raio * 0.65 * Math.cos(mid));
-                    float ty = cy + (float)(raio * 0.65 * Math.sin(mid))
-                            + textPaint.getTextSize() / 3f;
-                    canvas.drawText(String.format(Locale.getDefault(),
-                            "%.0f%%", percentuais.get(i)), tx, ty, textPaint);
-                }
-                angulo += sweep;
+        // Configurar o DataSet
+        BarDataSet dataSet = new BarDataSet(entries, "Intenção de Voto (%)");
+        dataSet.setColors(ColorTemplate.MATERIAL_COLORS);
+        dataSet.setValueTextSize(12f);
+        dataSet.setValueTextColor(Color.BLACK);
+        // Formata o valor dentro da barra com %
+        dataSet.setValueFormatter(new ValueFormatter() {
+            @Override
+            public String getFormattedValue(float value) {
+                return String.format(Locale.getDefault(), "%.1f%%", value);
             }
-        }
+        });
+
+        BarData data = new BarData(dataSet);
+        barChart.setData(data);
+
+        // Configuração do eixo X (que é o eixo vertical no HorizontalBarChart)
+        XAxis xAxis = barChart.getXAxis();
+        xAxis.setValueFormatter(new IndexAxisValueFormatter(labels));
+        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+        xAxis.setDrawGridLines(false);
+        xAxis.setGranularity(1f);
+        xAxis.setLabelCount(labels.size());
+        xAxis.setTextSize(12f);
+
+        // Configuração do eixo Y (que é o eixo horizontal no HorizontalBarChart)
+        YAxis yAxisLeft = barChart.getAxisLeft();
+        yAxisLeft.setAxisMinimum(0f);
+        yAxisLeft.setAxisMaximum(100f); // Máximo 100%
+        yAxisLeft.setDrawGridLines(true);
+
+        barChart.getAxisRight().setEnabled(false); // Desativa o eixo da direita
+        barChart.getDescription().setEnabled(false);
+        barChart.getLegend().setEnabled(false); // Legenda já está no eixo X
+        barChart.setFitBars(true); // Ajusta as barras para não ficarem cortadas
+        barChart.animateY(1000); // Animação de entrada
+        barChart.invalidate(); // Atualiza o gráfico
+
+        container.addView(barChart); // Adiciona o gráfico ao container (layout)
     }
 
-    // Legenda colorida
-    private LinearLayout criarLegenda(String label, int cor) {
-        LinearLayout row = new LinearLayout(this);
-        row.setOrientation(LinearLayout.HORIZONTAL);
-        row.setGravity(Gravity.CENTER_VERTICAL);
-        LinearLayout.LayoutParams rp = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.WRAP_CONTENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT);
-        rp.setMargins(0, dpToPx(4), 0, 0);
-        row.setLayoutParams(rp);
-
-        // Quadrado colorido
-        View quadrado = new View(this);
-        LinearLayout.LayoutParams qp = new LinearLayout.LayoutParams(dpToPx(14), dpToPx(14));
-        qp.setMargins(0, 0, dpToPx(6), 0);
-        quadrado.setLayoutParams(qp);
-        quadrado.setBackgroundColor(cor);
-        row.addView(quadrado);
-
-        TextView tv = new TextView(this);
-        tv.setText(label);
-        tv.setTextSize(12f);
-        tv.setTextColor(getResources().getColor(R.color.black));
-
-        row.addView(tv);
-
-        return row;
-    }
-
-    // Helpers
     private String resolverCandidato(int id) {
-        if (id == PesquisaEstimuladaActivity.ID_BRANCO)  return "Branco";
-        if (id == PesquisaEstimuladaActivity.ID_NULO)    return "Nulo";
-        if (id == PesquisaEstimuladaActivity.ID_NAO_SEI) return "Não sei";
+        // IDs constantes da PesquisaEstimuladaActivity
+        if (id == -100) return "Branco"; // ID_BRANCO
+        if (id == -200) return "Nulo";   // ID_NULO
+        if (id == -300) return "Não sei";// ID_NAO_SEI
+        
         switch (id) {
-            case 1: return "Jorge Amado";
-            case 2: return "Caio Cássio";
-            case 3: return "Luiza Albergue";
-            default: return "ID " + id;
+            case 1:
+                return "Jorge Amado";
+            case 2:
+                return "Caio Cássio";
+            case 3:
+                return "Luiza Albergue";
+            default:
+                return "Candidato " + id;
         }
-    }
-
-    private int dpToPx(int dp) {
-        return Math.round(dp * getResources().getDisplayMetrics().density);
     }
 }

@@ -104,7 +104,10 @@ public class RelatarProblemasActivity extends AppCompatActivity {
             entrevista.setProblemas(selecionados);
 
             // Próxima tela
-            Intent i = new Intent(RelatarProblemasActivity.this, DadosEleitoresActivity.class);
+            int candidatoId = getIntent().getIntExtra("candidatoId", -1);
+
+            Intent i = new Intent(this, DadosEleitoresActivity.class);
+            i.putExtra("candidatoId", candidatoId);
             i.putExtra("entrevista", entrevista);
             startActivity(i);
         });

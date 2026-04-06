@@ -81,7 +81,7 @@ public class DadosEleitoresActivity extends AppCompatActivity {
             if (location != null) {
                 latitude  = location.getLatitude();
                 longitude = location.getLongitude();
-                tvGps.setText(String.format("GPS: %.5f, %.5f", latitude, longitude));
+                tvGps.setText(String.format("Localização Aproximada: %.3f, %.3f", latitude, longitude));
             } else {
                 tvGps.setText("GPS: aguardando sinal...");
             }
@@ -103,38 +103,56 @@ public class DadosEleitoresActivity extends AppCompatActivity {
         }
     }
 
-
     private void salvar() {
-        String nome    = etNome.getText().toString().trim();
-        String celular = etCelular.getText().toString().trim();
+        String nome = etNome.getText().toString().trim();        String celular = etCelular.getText().toString().trim();
 
         if (nome.isEmpty() || celular.isEmpty()) {
             Toast.makeText(this, "Preencha nome e celular.", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        // Recupera a entrevista vinda da tela anterior
+        // Recupera a entrevista que veio da tela anterior
         Entrevista entrevista = (Entrevista) getIntent().getSerializableExtra("entrevista");
+        if (entrevista == null) return;
 
-        if (entrevista == null) {
-            Toast.makeText(this, "Erro: dados da entrevista perdidos.", Toast.LENGTH_SHORT).show();
-            return;
-        }
+        // Recupera o ID do candidato para o voto sigiloso
+        int candidatoId = getIntent().getIntExtra("candidatoId", -1);
 
-        // Preenche os campos finais
+        // 1. Configura os dados da Entrevista (Pessoais)
         entrevista.setNome(nome);
         entrevista.setCelular(celular);
-        entrevista.setLatitude(latitude);
-        entrevista.setLongitude(longitude);
 
-        // Salvando: lista estática ou  banco local (Room)
-        ListaEntrevistas.getInstance().add(entrevista);
+        // Reduzindo a precisão para garantir sigilo (3 casas decimais = aprox. 100m)
+        double latReduzida = Math.round(latitude * 1000.0) / 1000.0;
+        double lonReduzida = Math.round(longitude * 1000.0) / 1000.0;
 
-        Toast.makeText(this, "Entrevista salva com sucesso!", Toast.LENGTH_SHORT).show();
+        entrevista.setLatitude(latReduzida);
+        entrevista.setLongitude(lonReduzida);
+        entrevista.setTimestamp(System.currentTimeMillis());
 
-        // Volta para MainActivity limpando o backstack
-        Intent i = new Intent(DadosEleitoresActivity.this, MainActivity.class);
-        i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        startActivity(i);
+        // 2. Executa a operação em uma Thread separada (Obrigatório no Room)
+        new Thread(() -> {
+            AppDatabase db = AppDatabase.getInstance(this);
+
+            // Salva os dados do Eleitor (Quem participou)
+            db.entrevistaDao().inserir(entrevista);
+
+            // Salva o Voto (O que foi votado - SEM VÍNCULO COM O ELEITOR)
+            if (candidatoId != -1) {
+                Voto voto = new Voto(candidatoId);
+                // Opcional: você pode salvar a localização reduzida no voto também para estatísticas por bairro
+                db.votoDAO().inserir(voto);
+            }
+
+            // 3. Volta para a Thread principal para atualizar a interface (UI)
+            runOnUiThread(() -> {
+                Toast.makeText(this, "Pesquisa salva com sucesso (voto sigiloso)!", Toast.LENGTH_SHORT).show();
+
+                Intent i = new Intent(this, MainActivity.class);
+                i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                startActivity(i);
+                finish(); // Fecha esta activity
+            });
+        }).start();
     }
 }

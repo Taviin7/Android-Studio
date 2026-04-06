@@ -39,8 +39,14 @@ dependencies {
     implementation(libs.activity)
     implementation(libs.constraintlayout)
     implementation(libs.play.services.location)
+    implementation(libs.room.common.jvm)
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
     //implementation("com.google.android.gms:play-services-location:21.3.0")
+    implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")
+    //Implementação do Room - BD
+    val room_version = "2.7.0-alpha13" // Updated to support Kotlin 2.1 metadata
+    implementation("androidx.room:room-runtime:$room_version")
+    annotationProcessor("androidx.room:room-compiler:$room_version")
 }

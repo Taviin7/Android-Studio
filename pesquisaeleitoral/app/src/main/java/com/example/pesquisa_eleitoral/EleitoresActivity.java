@@ -32,15 +32,18 @@ public class EleitoresActivity extends AppCompatActivity {
         });
 
         LinearLayout container = findViewById(R.id.containerEleitores);
-        List<Entrevista> entrevistas = ListaEntrevistas.getInstance().getAll();
+
+        // Busca todas as entrevistas do banco
+        List<Entrevista> entrevistas = AppDatabase.getInstance(this)
+                .entrevistaDao()
+                .buscarTodas();
 
         if (entrevistas.isEmpty()) {
             TextView tv = new TextView(this);
             tv.setText("Nenhuma entrevista registrada ainda.");
             tv.setTextSize(14f);
-            tv.setTextColor(getResources().getColor(R.color.black));
             tv.setGravity(Gravity.CENTER);
-            tv.setPadding(0, 80, 0, 0);
+            tv.setPadding(0, dpToPx(80), 0, 0);
             container.addView(tv);
             return;
         }
@@ -48,8 +51,7 @@ public class EleitoresActivity extends AppCompatActivity {
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault());
 
         for (int i = 0; i < entrevistas.size(); i++) {
-            Entrevista e = entrevistas.get(i);
-            container.addView(criarCard(i + 1, e, sdf));
+            container.addView(criarCard(i + 1, entrevistas.get(i), sdf));
         }
     }
 
@@ -74,10 +76,6 @@ public class EleitoresActivity extends AppCompatActivity {
         card.addView(linha("Celular: " + valorOu(e.getCelular(), "—"), false));
         card.addView(linha("Data/hora: " + sdf.format(new Date(e.getTimestamp())), false));
         card.addView(linha("Localização: " + formatarGps(e.getLatitude(), e.getLongitude()), false));
-
-        // Candidato votado
-        String candidato = resolverCandidato(e.getCandidatoId());
-        card.addView(linha("Voto (estimulado): " + candidato, false));
 
         // Problemas
         String problemas = e.getProblemas() != null && !e.getProblemas().isEmpty()

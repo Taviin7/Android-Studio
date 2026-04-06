@@ -75,11 +75,10 @@ public class PesquisaEstimuladaActivity extends AppCompatActivity {
             }
 
             RadioButton selected = findViewById(selectedId);
-            int candidatoId = (int) selected.getTag();
+            //int candidatoId = (int) selected.getTag();
 
             // "Salvando" a entrevista
             Entrevista entrevista = new Entrevista(
-                    candidatoId,
                     new ArrayList<>(),
                     "",
                     "",
@@ -88,7 +87,8 @@ public class PesquisaEstimuladaActivity extends AppCompatActivity {
                     0.0
             );
 
-            Intent i = new Intent(PesquisaEstimuladaActivity.this, RelatarProblemasActivity.class);
+            Intent i = new Intent(this, RelatarProblemasActivity.class);
+            i.putExtra("candidatoId", selectedId);
             i.putExtra("entrevista", entrevista);
             startActivity(i);
         });
