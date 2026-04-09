@@ -1,7 +1,9 @@
 package com.example.pesquisa_eleitoral;
 
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -24,7 +26,6 @@ import java.util.Locale;
 public class ResultadoPesquisaActivity extends AppCompatActivity {
 
     private LinearLayout container;
-    private HorizontalBarChart barChart;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,74 +33,76 @@ public class ResultadoPesquisaActivity extends AppCompatActivity {
         setContentView(R.layout.activity_resultado_pesquisa);
 
         container = findViewById(R.id.containerResultado);
-        barChart = new HorizontalBarChart(this);
-        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT, 800); // 800px de altura
-        barChart.setLayoutParams(lp);
-
         carregarDados();
     }
 
     private void carregarDados() {
-        // RODAR EM BACKGROUND (Obrigatório para o Room)
         new Thread(() -> {
             AppDatabase db = AppDatabase.getInstance(this);
 
-            // 1. Busca total de entrevistas (eleitores)
+            // 1. Dados Gerais e Estimulados
             int totalEntrevistas = db.entrevistaDao().buscarTodas().size();
+            List<Voto.ContarVotos> estimulados = db.votoDAO().contarVotos();
 
-            // 2. Busca contagem de votos (sigilosos)
-            List<Voto.ContarVotos> itens = db.votoDAO().contarVotos();
+            // 2. Dados Espontâneos
+            List<VotoEspontaneo.ContarVotoEspontaneo> espontaneos = db.votoEspontaneoDAO().contar();
 
-            // Volta para a UI Thread para desenhar
             runOnUiThread(() -> {
-                exibirResultados(totalEntrevistas, itens);
+                exibirResultados(totalEntrevistas, estimulados, espontaneos);
             });
         }).start();
     }
 
-    private void exibirResultados(int totalEntrevistas, List<Voto.ContarVotos> itens) {
+    private void exibirResultados(int total, List<Voto.ContarVotos> estimulados, List<VotoEspontaneo.ContarVotoEspontaneo> espontaneos) {
         container.removeAllViews();
 
-        // Texto do Total
-        TextView tvTotal = new TextView(this);
-        tvTotal.setText("Total de entrevistados: " + totalEntrevistas);
-        tvTotal.setTextSize(18f);
-        container.addView(tvTotal);
+        // Cabeçalho Principal
+        adicionarTitulo("RELATÓRIO DE INTENÇÃO DE VOTO", 22, Color.BLACK);
+        adicionarSubtitulo("Total de entrevistados: " + total);
 
-        if (itens.isEmpty()) {
-            TextView tvVazio = new TextView(this);
-            tvVazio.setText("\nNenhum voto registrado.");
-            container.addView(tvVazio);
-            return;
+        // --- SEÇÃO ESTIMULADA ---
+        adicionarTitulo("1. PESQUISA ESTIMULADA", 18, Color.BLUE);
+        if (estimulados.isEmpty()) {
+            adicionarTexto("Sem dados de pesquisa estimulada.");
+        } else {
+            HorizontalBarChart chartEstimulado = criarGraficoEstimulado(total, estimulados);
+            container.addView(chartEstimulado);
         }
 
-        // Preparar dados para o gráfico de barras
+        // Espaçamento
+        adicionarTexto("\n");
+
+        // --- SEÇÃO ESPONTÂNEA ---
+        adicionarTitulo("2. PESQUISA ESPONTÂNEA", 18, Color.parseColor("#388E3C")); // Verde escuro
+        if (espontaneos.isEmpty()) {
+            adicionarTexto("Sem dados de pesquisa espontânea.");
+        } else {
+            // Para a espontânea, vamos listar os textos pois podem ser muitos nomes diferentes
+            for (VotoEspontaneo.ContarVotoEspontaneo item : espontaneos) {
+                float pct = (total > 0) ? (item.total * 100f) / total : 0f;
+                adicionarTexto(String.format(Locale.getDefault(), 
+                    "• %s: %d votos (%.1f%%)", item.resposta, item.total, pct));
+            }
+        }
+    }
+
+    private HorizontalBarChart criarGraficoEstimulado(int total, List<Voto.ContarVotos> itens) {
+        HorizontalBarChart barChart = new HorizontalBarChart(this);
+        barChart.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 600));
+
         List<BarEntry> entries = new ArrayList<>();
         List<String> labels = new ArrayList<>();
 
         for (int i = 0; i < itens.size(); i++) {
             Voto.ContarVotos item = itens.get(i);
-            String nomeCandidato = resolverCandidato(item.candidatoId);
-            float pct = (totalEntrevistas > 0) ? (item.total * 100f) / totalEntrevistas : 0f;
-
-            // Invertemos a ordem para que o primeiro da lista apareça no topo
+            float pct = (total > 0) ? (item.total * 100f) / total : 0f;
             entries.add(new BarEntry(i, pct));
-            labels.add(nomeCandidato);
-
-            // Adiciona legenda em texto abaixo
-            TextView tvLinha = new TextView(this);
-            tvLinha.setText(String.format(Locale.getDefault(),
-                    "%s: %d votos (%.1f%%)", nomeCandidato, item.total, pct));
-            container.addView(tvLinha);
+            labels.add(resolverCandidato(item.candidatoId));
         }
 
-        // Configurar o DataSet
-        BarDataSet dataSet = new BarDataSet(entries, "Intenção de Voto (%)");
-        dataSet.setColors(ColorTemplate.MATERIAL_COLORS);
+        BarDataSet dataSet = new BarDataSet(entries, "Intenção (%)");
+        dataSet.setColors(ColorTemplate.JOYFUL_COLORS);
         dataSet.setValueTextSize(12f);
-        dataSet.setValueTextColor(Color.BLACK);
-        // Formata o valor dentro da barra com %
         dataSet.setValueFormatter(new ValueFormatter() {
             @Override
             public String getFormattedValue(float value) {
@@ -107,49 +110,58 @@ public class ResultadoPesquisaActivity extends AppCompatActivity {
             }
         });
 
-        BarData data = new BarData(dataSet);
-        barChart.setData(data);
-
-        // Configuração do eixo X (que é o eixo vertical no HorizontalBarChart)
-        XAxis xAxis = barChart.getXAxis();
-        xAxis.setValueFormatter(new IndexAxisValueFormatter(labels));
-        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
-        xAxis.setDrawGridLines(false);
-        xAxis.setGranularity(1f);
-        xAxis.setLabelCount(labels.size());
-        xAxis.setTextSize(12f);
-
-        // Configuração do eixo Y (que é o eixo horizontal no HorizontalBarChart)
-        YAxis yAxisLeft = barChart.getAxisLeft();
-        yAxisLeft.setAxisMinimum(0f);
-        yAxisLeft.setAxisMaximum(100f); // Máximo 100%
-        yAxisLeft.setDrawGridLines(true);
-
-        barChart.getAxisRight().setEnabled(false); // Desativa o eixo da direita
+        barChart.setData(new BarData(dataSet));
+        barChart.getXAxis().setValueFormatter(new IndexAxisValueFormatter(labels));
+        barChart.getXAxis().setPosition(XAxis.XAxisPosition.BOTTOM);
+        barChart.getXAxis().setGranularity(1f);
+        barChart.getAxisLeft().setAxisMinimum(0f);
+        barChart.getAxisLeft().setAxisMaximum(100f);
+        barChart.getAxisRight().setEnabled(false);
         barChart.getDescription().setEnabled(false);
-        barChart.getLegend().setEnabled(false); // Legenda já está no eixo X
-        barChart.setFitBars(true); // Ajusta as barras para não ficarem cortadas
-        barChart.animateY(1000); // Animação de entrada
-        barChart.invalidate(); // Atualiza o gráfico
+        barChart.getLegend().setEnabled(false);
+        barChart.animateY(800);
+        
+        return barChart;
+    }
 
-        container.addView(barChart); // Adiciona o gráfico ao container (layout)
+    // Métodos auxiliares de UI
+    private void adicionarTitulo(String texto, int tamanho, int cor) {
+        TextView tv = new TextView(this);
+        tv.setText(texto);
+        tv.setTextSize(tamanho);
+        tv.setTextColor(cor);
+        tv.setTypeface(null, Typeface.BOLD);
+        tv.setPadding(0, 32, 0, 16);
+        tv.setGravity(Gravity.CENTER_HORIZONTAL);
+        container.addView(tv);
+    }
+
+    private void adicionarSubtitulo(String texto) {
+        TextView tv = new TextView(this);
+        tv.setText(texto);
+        tv.setTextSize(16);
+        tv.setPadding(0, 0, 0, 32);
+        tv.setGravity(Gravity.CENTER_HORIZONTAL);
+        container.addView(tv);
+    }
+
+    private void adicionarTexto(String texto) {
+        TextView tv = new TextView(this);
+        tv.setText(texto);
+        tv.setTextSize(14);
+        tv.setPadding(20, 4, 20, 4);
+        container.addView(tv);
     }
 
     private String resolverCandidato(int id) {
-        // IDs constantes da PesquisaEstimuladaActivity
-        if (id == -100) return "Branco"; // ID_BRANCO
-        if (id == -200) return "Nulo";   // ID_NULO
-        if (id == -300) return "Não sei";// ID_NAO_SEI
-        
+        if (id == -100) return "Branco";
+        if (id == -200) return "Nulo";
+        if (id == -300) return "Não sei";
         switch (id) {
-            case 1:
-                return "Jorge Amado";
-            case 2:
-                return "Caio Cássio";
-            case 3:
-                return "Luiza Albergue";
-            default:
-                return "Candidato " + id;
+            case 1: return "Jorge Amado";
+            case 2: return "Caio Cássio";
+            case 3: return "Luiza Albergue";
+            default: return "Candidato " + id;
         }
     }
 }

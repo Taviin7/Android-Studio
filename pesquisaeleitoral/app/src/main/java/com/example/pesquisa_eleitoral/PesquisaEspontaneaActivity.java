@@ -39,16 +39,13 @@ public class PesquisaEspontaneaActivity extends AppCompatActivity {
                 return;
             }
 
-            // Cria o objeto para levar o voto espontâneo
             Entrevista entrevista = new Entrevista();
             entrevista.setVotoEspontaneo(resposta);
-            entrevista.setProblemas(new ArrayList<>()); // Lista vazia de problemas
+            entrevista.setProblemas(new ArrayList<>());
             entrevista.setTimestamp(System.currentTimeMillis());
 
-            // Pula diretamente para a tela de Dados do Eleitor e Salvar
             Intent i = new Intent(this, DadosEleitoresActivity.class);
             i.putExtra("entrevista", entrevista);
-            // Definimos um ID inválido para o voto estimulado, pois ele não passou por aquela tela
             i.putExtra("candidatoId", -1);
             startActivity(i);
         });

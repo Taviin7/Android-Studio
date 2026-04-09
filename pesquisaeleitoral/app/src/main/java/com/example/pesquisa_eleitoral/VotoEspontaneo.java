@@ -1,6 +1,7 @@
 package com.example.pesquisa_eleitoral;
 
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 @Entity(tableName = "votos_espontaneos")
@@ -13,11 +14,13 @@ public class VotoEspontaneo {
 
     public VotoEspontaneo() {}
 
+    @Ignore
     public VotoEspontaneo(String resposta) {
         this.resposta = resposta;
     }
 
-    public class ContarVotoEspontaneo {
+    // Deve ser static para o Room conseguir instanciar
+    public static class ContarVotoEspontaneo {
         public String resposta;
         public int total;
 

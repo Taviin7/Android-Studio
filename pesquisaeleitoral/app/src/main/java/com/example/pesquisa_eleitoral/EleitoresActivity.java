@@ -3,7 +3,6 @@ package com.example.pesquisa_eleitoral;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.widget.LinearLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
@@ -56,7 +55,6 @@ public class EleitoresActivity extends AppCompatActivity {
     }
 
     private LinearLayout criarCard(int numero, Entrevista e, SimpleDateFormat sdf) {
-        // Card externo
         LinearLayout card = new LinearLayout(this);
         card.setOrientation(LinearLayout.VERTICAL);
         card.setBackgroundResource(android.R.drawable.dialog_holo_light_frame);
@@ -68,16 +66,12 @@ public class EleitoresActivity extends AppCompatActivity {
         card.setLayoutParams(cardParams);
         card.setPadding(dpToPx(12), dpToPx(12), dpToPx(12), dpToPx(12));
 
-        // Número do entrevistado
         card.addView(linha("Entrevistado #" + numero, true));
-
-        // Campos
         card.addView(linha("Nome: " + valorOu(e.getNome(), "—"), false));
         card.addView(linha("Celular: " + valorOu(e.getCelular(), "—"), false));
         card.addView(linha("Data/hora: " + sdf.format(new Date(e.getTimestamp())), false));
         card.addView(linha("Localização: " + formatarGps(e.getLatitude(), e.getLongitude()), false));
 
-        // Problemas
         String problemas = e.getProblemas() != null && !e.getProblemas().isEmpty()
                 ? String.join(", ", e.getProblemas())
                 : "—";
@@ -94,21 +88,6 @@ public class EleitoresActivity extends AppCompatActivity {
         if (negrito) tv.setTypeface(null, android.graphics.Typeface.BOLD);
         tv.setPadding(0, dpToPx(2), 0, dpToPx(2));
         return tv;
-    }
-
-    private String resolverCandidato(int id) {
-        if (id == PesquisaEstimuladaActivity.ID_BRANCO)  return "Branco";
-        if (id == PesquisaEstimuladaActivity.ID_NULO)    return "Nulo";
-        if (id == PesquisaEstimuladaActivity.ID_NAO_SEI) return "Não sei";
-
-        // Busca na lista de candidatos que definido na PesquisaEstimuladaActivity
-        // Se tiver um Repositorio/lista global, usaria aqui. Caso contrário:
-        switch (id) {
-            case 1: return "Jorge Amado";
-            case 2: return "Candidato 2";
-            case 3: return "Candidato 3";
-            default: return "ID " + id;
-        }
     }
 
     private String formatarGps(double lat, double lon) {

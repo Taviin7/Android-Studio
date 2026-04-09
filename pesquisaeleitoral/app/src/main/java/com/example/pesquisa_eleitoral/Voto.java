@@ -1,7 +1,9 @@
 package com.example.pesquisa_eleitoral;
 
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
+
 //Classe de Entidade (Room) para salvar voto, sem dados pessoais
 @Entity(tableName = "votos")
 public class Voto {
@@ -15,11 +17,11 @@ public class Voto {
     public Voto() {}
 
     // Construtor prático
+    @Ignore
     public Voto(int candidatoId) {
         this.candidatoId = candidatoId;
     }
 
-    // Dentro de Voto.java
     public static class ContarVotos {
         public int candidatoId;
         public int total;
