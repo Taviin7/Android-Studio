@@ -34,7 +34,6 @@ public class DadosEleitoresActivity extends AppCompatActivity {
     private double latitude  = 0.0;
     private double longitude = 0.0;
 
-    @RequiresPermission(allOf = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION})
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,9 +57,6 @@ public class DadosEleitoresActivity extends AppCompatActivity {
         btn_salvar.setOnClickListener(v -> salvar());
     }
 
-    // GPS
-
-    @RequiresPermission(anyOf = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION})
     private void obterLocalizacao() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
@@ -72,7 +68,6 @@ public class DadosEleitoresActivity extends AppCompatActivity {
         buscarLocalizacao();
     }
 
-    @RequiresPermission(anyOf = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION})
     private void buscarLocalizacao() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) return;
@@ -88,15 +83,10 @@ public class DadosEleitoresActivity extends AppCompatActivity {
         });
     }
 
-    @RequiresPermission(allOf = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION})
     @Override
-    public void onRequestPermissionsResult(int requestCode,
-                                           @NonNull String[] permissions,
-                                           @NonNull int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == REQUEST_LOCATION
-                && grantResults.length > 0
-                && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+        if (requestCode == REQUEST_LOCATION && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             buscarLocalizacao();
         } else {
             tvGps.setText("GPS: permissão negada");
@@ -104,18 +94,17 @@ public class DadosEleitoresActivity extends AppCompatActivity {
     }
 
     private void salvar() {
-        String nome = etNome.getText().toString().trim();        String celular = etCelular.getText().toString().trim();
+        String nome = etNome.getText().toString().trim();
+        String celular = etCelular.getText().toString().trim();
 
         if (nome.isEmpty() || celular.isEmpty()) {
             Toast.makeText(this, "Preencha nome e celular.", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        // Recupera a entrevista que veio da tela anterior
         Entrevista entrevista = (Entrevista) getIntent().getSerializableExtra("entrevista");
         if (entrevista == null) return;
 
-        // Recupera o ID do candidato para o voto sigiloso
         int candidatoId = getIntent().getIntExtra("candidatoId", -1);
 
         // 1. Configura os dados da Entrevista (Pessoais)
@@ -125,33 +114,36 @@ public class DadosEleitoresActivity extends AppCompatActivity {
         // Reduzindo a precisão para garantir sigilo (3 casas decimais = aprox. 100m)
         double latReduzida = Math.round(latitude * 1000.0) / 1000.0;
         double lonReduzida = Math.round(longitude * 1000.0) / 1000.0;
-
         entrevista.setLatitude(latReduzida);
         entrevista.setLongitude(lonReduzida);
         entrevista.setTimestamp(System.currentTimeMillis());
 
-        // 2. Executa a operação em uma Thread separada (Obrigatório no Room)
+        // Extrai o voto espontâneo para salvar separado (Sigilo)
+        String textoEspontaneo = entrevista.getVotoEspontaneo();
+        entrevista.setVotoEspontaneo(null); // Limpa do objeto para não salvar na tabela 'entrevistas'
+
         new Thread(() -> {
             AppDatabase db = AppDatabase.getInstance(this);
 
-            // Salva os dados do Eleitor (Quem participou)
+            // Salva perfil do eleitor
             db.entrevistaDao().inserir(entrevista);
 
-            // Salva o Voto (O que foi votado - SEM VÍNCULO COM O ELEITOR)
+            // Salva voto estimulado de forma anônima
             if (candidatoId != -1) {
-                Voto voto = new Voto(candidatoId);
-                // Opcional: você pode salvar a localização reduzida no voto também para estatísticas por bairro
-                db.votoDAO().inserir(voto);
+                db.votoDAO().inserir(new Voto(candidatoId));
             }
 
-            // 3. Volta para a Thread principal para atualizar a interface (UI)
-            runOnUiThread(() -> {
-                Toast.makeText(this, "Pesquisa salva com sucesso (voto sigiloso)!", Toast.LENGTH_SHORT).show();
+            // Salva voto espontâneo de forma anônima na tabela específica
+            if (textoEspontaneo != null && !textoEspontaneo.isEmpty()) {
+                db.votoEspontaneoDAO().inserir(new VotoEspontaneo(textoEspontaneo));
+            }
 
+            runOnUiThread(() -> {
+                Toast.makeText(this, "Pesquisa salva com sucesso (votos sigilosos)!", Toast.LENGTH_SHORT).show();
                 Intent i = new Intent(this, MainActivity.class);
                 i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 startActivity(i);
-                finish(); // Fecha esta activity
+                finish();
             });
         }).start();
     }

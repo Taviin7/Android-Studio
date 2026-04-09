@@ -20,3 +20,4 @@ public interface VotoDAO {
     @Query("SELECT * FROM votos")
     List<Voto> getAll();
 }
+

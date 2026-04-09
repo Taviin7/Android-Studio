@@ -2,9 +2,9 @@ package com.example.pesquisa_eleitoral;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -21,6 +21,7 @@ public class PesquisaEspontaneaActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_pesquisa_espontanea);
+
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
@@ -29,15 +30,27 @@ public class PesquisaEspontaneaActivity extends AppCompatActivity {
 
         Button btn_confirmar = findViewById(R.id.btn_confirmar);
         EditText ed_nome = findViewById(R.id.ed_nome);
-        btn_confirmar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
 
+        btn_confirmar.setOnClickListener(v -> {
+            String resposta = ed_nome.getText().toString().trim();
 
-                Intent i = new Intent(PesquisaEspontaneaActivity.this, DadosEleitoresActivity.class);
-                //i.putExtra("entrevista", entrevista);
-                startActivity(i);
+            if (resposta.isEmpty()) {
+                Toast.makeText(this, "Por favor, digite o nome do candidato.", Toast.LENGTH_SHORT).show();
+                return;
             }
+
+            // Cria o objeto para levar o voto espontâneo
+            Entrevista entrevista = new Entrevista();
+            entrevista.setVotoEspontaneo(resposta);
+            entrevista.setProblemas(new ArrayList<>()); // Lista vazia de problemas
+            entrevista.setTimestamp(System.currentTimeMillis());
+
+            // Pula diretamente para a tela de Dados do Eleitor e Salvar
+            Intent i = new Intent(this, DadosEleitoresActivity.class);
+            i.putExtra("entrevista", entrevista);
+            // Definimos um ID inválido para o voto estimulado, pois ele não passou por aquela tela
+            i.putExtra("candidatoId", -1);
+            startActivity(i);
         });
     }
 }

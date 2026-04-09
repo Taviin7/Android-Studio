@@ -1,0 +1,32 @@
+package com.example.pesquisa_eleitoral;
+
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
+@Entity(tableName = "votos_espontaneos")
+public class VotoEspontaneo {
+
+    @PrimaryKey(autoGenerate = true)
+    private int id;
+
+    private String resposta; // Texto digitado pelo entrevistado
+
+    public VotoEspontaneo() {}
+
+    public VotoEspontaneo(String resposta) {
+        this.resposta = resposta;
+    }
+
+    public class ContarVotoEspontaneo {
+        public String resposta;
+        public int total;
+
+        public ContarVotoEspontaneo() {}
+    }
+
+    public int getId() { return id; }
+    public String getResposta() { return resposta; }
+
+    public void setId(int id) { this.id = id; }
+    public void setResposta(String resposta) { this.resposta = resposta; }
+}

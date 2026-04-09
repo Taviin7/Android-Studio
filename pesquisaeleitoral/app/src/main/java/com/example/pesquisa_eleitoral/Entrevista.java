@@ -1,6 +1,7 @@
 package com.example.pesquisa_eleitoral;
 
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 import androidx.room.TypeConverters;
 
@@ -8,31 +9,30 @@ import java.io.Serializable;
 import java.util.List;
 
 @Entity(tableName = "entrevistas")
-@TypeConverters(Converters.class) //Para salvar List<String> já que o Room não sabe como salvar
-public class Entrevista implements Serializable { //Serializable para passar entre telas
+@TypeConverters(Converters.class)
+public class Entrevista implements Serializable {
 
     @PrimaryKey(autoGenerate = true)
     private int id;
 
-    private List<String> problemas;
+    @Ignore
+    private String votoEspontaneo; // Usado apenas para transição entre telas, não salvo aqui por sigilo
 
+    private List<String> problemas;
     private String nome;
     private String celular;
     private long timestamp;
     private double latitude;
     private double longitude;
 
-    //Construtor vazio obrigatório para Room
     public Entrevista() {}
 
-    //Construtor usado no app (fluxo das telas)
     public Entrevista(List<String> problemas,
                       String nome,
                       String celular,
                       long timestamp,
                       double latitude,
                       double longitude) {
-
         this.problemas = problemas;
         this.nome = nome;
         this.celular = celular;
@@ -41,21 +41,28 @@ public class Entrevista implements Serializable { //Serializable para passar ent
         this.longitude = longitude;
     }
 
-    // Getters
+    // Getters e Setters
     public int getId() { return id; }
-    public List<String> getProblemas() { return problemas; }
-    public String getNome() { return nome; }
-    public String getCelular() { return celular; }
-    public long getTimestamp() { return timestamp; }
-    public double getLatitude() { return latitude; }
-    public double getLongitude() { return longitude; }
-
-    // Setters
     public void setId(int id) { this.id = id; }
+
+    public String getVotoEspontaneo() { return votoEspontaneo; }
+    public void setVotoEspontaneo(String votoEspontaneo) { this.votoEspontaneo = votoEspontaneo; }
+
+    public List<String> getProblemas() { return problemas; }
     public void setProblemas(List<String> problemas) { this.problemas = problemas; }
+
+    public String getNome() { return nome; }
     public void setNome(String nome) { this.nome = nome; }
+
+    public String getCelular() { return celular; }
     public void setCelular(String celular) { this.celular = celular; }
+
+    public long getTimestamp() { return timestamp; }
     public void setTimestamp(long timestamp) { this.timestamp = timestamp; }
+
+    public double getLatitude() { return latitude; }
     public void setLatitude(double latitude) { this.latitude = latitude; }
+
+    public double getLongitude() { return longitude; }
     public void setLongitude(double longitude) { this.longitude = longitude; }
 }
