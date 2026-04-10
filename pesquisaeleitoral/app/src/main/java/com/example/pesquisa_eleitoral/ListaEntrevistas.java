@@ -12,16 +12,23 @@ public class ListaEntrevistas {
     private static ListaEntrevistas instance;
     private final List<Entrevista> lista = new ArrayList<>();
 
-    private ListaEntrevistas() {}
+    private ListaEntrevistas() {
+    }
 
     public static ListaEntrevistas getInstance() {
         if (instance == null) instance = new ListaEntrevistas();
         return instance;
     }
 
-    public void add(Entrevista e) { lista.add(e); }
+    public void add(Entrevista e) {
+        lista.add(e);
+    }
 
-    public List<Entrevista> getAll() { return lista; }
+    public List<Entrevista> getAll() {
+        return lista;
+    }
 
-    public int total() { return lista.size(); }
+    public int total() {
+        return lista.size();
+    }
 }

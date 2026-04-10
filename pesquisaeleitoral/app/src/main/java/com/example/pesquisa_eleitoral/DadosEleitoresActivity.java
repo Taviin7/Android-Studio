@@ -107,11 +107,11 @@ public class DadosEleitoresActivity extends AppCompatActivity {
 
         int candidatoId = getIntent().getIntExtra("candidatoId", -1);
 
-        // 1. Configura os dados da Entrevista (Pessoais)
+        // Configura os dados da Entrevista (Pessoais)
         entrevista.setNome(nome);
         entrevista.setCelular(celular);
 
-        // Reduzindo a precisão para garantir sigilo (3 casas decimais = aprox. 100m)
+        // 3 casas decimais = aprox. 100m
         double latReduzida = Math.round(latitude * 1000.0) / 1000.0;
         double lonReduzida = Math.round(longitude * 1000.0) / 1000.0;
         entrevista.setLatitude(latReduzida);

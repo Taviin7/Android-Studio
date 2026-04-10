@@ -13,7 +13,7 @@ public interface VotoDAO {
     void inserir(Voto voto);
 
     // Contagem de votos por candidato
-    @Query("SELECT candidatoId, COUNT(*) as total FROM votos GROUP BY candidatoId")
+    @Query("SELECT vto_candidato, COUNT(*) as total FROM votos GROUP BY vto_candidato")
     List<Voto.ContarVotos> contarVotos();
 
     // Lista todos os votos

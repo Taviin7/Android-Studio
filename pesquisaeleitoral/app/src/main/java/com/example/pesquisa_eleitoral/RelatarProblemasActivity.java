@@ -16,11 +16,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class RelatarProblemasActivity extends AppCompatActivity {
-
     private Entrevista entrevista;
     private LinearLayout layoutProblemas;
     private CheckBox cbOutro;
     private EditText edtOutro;
+    private static final int MAX_SELECOES = 3; // Define o número exato
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,14 +38,7 @@ public class RelatarProblemasActivity extends AppCompatActivity {
         entrevista = (Entrevista) getIntent().getSerializableExtra("entrevista");
 
         // Lista de problemas
-        String[] problemas = {
-                "Saúde",
-                "Educação",
-                "Segurança",
-                "Transporte",
-                "Corrupção",
-                "Desemprego"
-        };
+        String[] problemas = {"Saúde", "Educação", "Segurança", "Transporte", "Corrupção", "Desemprego"};
 
         // Criar CheckBoxes dinamicamente
         for (String p : problemas) {
@@ -66,16 +59,13 @@ public class RelatarProblemasActivity extends AppCompatActivity {
 
         // Botão próximo
         btn.setOnClickListener(v -> {
-
             List<String> selecionados = new ArrayList<>();
 
-            // Percorre os checkboxes criados dinamicamente
+            // 1. Percorre os checkboxes criados dinamicamente
             for (int i = 0; i < layoutProblemas.getChildCount(); i++) {
                 View view = layoutProblemas.getChildAt(i);
-
                 if (view instanceof CheckBox) {
                     CheckBox cb = (CheckBox) view;
-
                     if (cb.isChecked()) {
                         selecionados.add(cb.getText().toString());
                     }
@@ -85,30 +75,26 @@ public class RelatarProblemasActivity extends AppCompatActivity {
             // Trata "Outro", validando se há texto
             if (cbOutro.isChecked()) {
                 String outroTexto = edtOutro.getText().toString().trim();
-
                 if (outroTexto.isEmpty()) {
                     edtOutro.setError("Digite o problema");
                     return;
                 }
-
                 selecionados.add(outroTexto);
             }
 
-            // Validação geral
-            if (selecionados.isEmpty()) {
-                Toast.makeText(this, "Selecione ao menos um problema", Toast.LENGTH_SHORT).show();
-                return;
+            // Verifica se o total é exatamente 3
+            if (selecionados.size() != MAX_SELECOES) {
+                Toast.makeText(this, "Por favor, selecione exatamente " + MAX_SELECOES + " problemas.", Toast.LENGTH_SHORT).show();
+                return; // Interrompe o envio
             }
 
             // Atualiza a entrevista
             entrevista.setProblemas(selecionados);
 
-            // Próxima tela
             int candidatoId = getIntent().getIntExtra("candidatoId", -1);
-
             Intent i = new Intent(this, DadosEleitoresActivity.class);
             i.putExtra("candidatoId", candidatoId);
-            i.putExtra("entrevista", entrevista);
+            i.putExtra("entrevista", (java.io.Serializable) entrevista);
             startActivity(i);
         });
     }

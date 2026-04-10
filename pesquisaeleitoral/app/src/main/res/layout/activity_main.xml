@@ -11,7 +11,7 @@
         android:id="@+id/img_logoLogin3"
         android:layout_width="319dp"
         android:layout_height="126dp"
-        android:layout_marginTop="36dp"
+        android:layout_marginTop="175dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btn_finalizar"
@@ -34,21 +34,21 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="36dp"
         android:fontFamily="sans-serif-condensed"
-        android:text="Eleições 2026 \nPesquisa de Intenção"
+        android:text="Eleições 2026 \nPesquisa de Intenção de Voto"
         android:textAlignment="center"
-        android:textSize="34sp"
+        android:textSize="30sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageView3" />
 
     <Button
-        android:id="@+id/btn_pesquisaEstimulada"
+        android:id="@+id/btn_iniciarPesquisa"
         android:layout_width="150dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="40dp"
-        android:text="Pesquisa Estimulada"
         android:backgroundTint="#302681"
+        android:text="Iniciar Pesquisa"
         android:textColor="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.493"
@@ -57,29 +57,16 @@
 
 
     <Button
-        android:id="@+id/btn_pesquisaEspontanea"
-        android:layout_width="150dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="28dp"
-        android:text="Pesquisa Espontânea"
-        android:backgroundTint="#302681"
-        android:textColor="@color/white"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.493"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btn_pesquisaEstimulada" />
-
-    <Button
         android:id="@+id/btn_finalizar"
         android:layout_width="150dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="28dp"
-        android:text="Finalizar"
         android:backgroundTint="#302681"
+        android:text="Finalizar"
         android:textColor="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.495"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btn_pesquisaEspontanea" />
+        app:layout_constraintTop_toBottomOf="@+id/btn_iniciarPesquisa" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

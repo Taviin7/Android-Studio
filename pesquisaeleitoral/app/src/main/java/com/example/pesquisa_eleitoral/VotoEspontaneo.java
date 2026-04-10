@@ -1,5 +1,6 @@
 package com.example.pesquisa_eleitoral;
 
+import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
@@ -9,10 +10,11 @@ public class VotoEspontaneo {
 
     @PrimaryKey(autoGenerate = true)
     private int id;
-
+    @ColumnInfo(name = "vte_resposta")
     private String resposta; // Texto digitado pelo entrevistado
 
-    public VotoEspontaneo() {}
+    public VotoEspontaneo() {
+    }
 
     @Ignore
     public VotoEspontaneo(String resposta) {
@@ -21,15 +23,27 @@ public class VotoEspontaneo {
 
     // Deve ser static para o Room conseguir instanciar
     public static class ContarVotoEspontaneo {
+        @ColumnInfo(name = "vte_resposta")
         public String resposta;
         public int total;
 
-        public ContarVotoEspontaneo() {}
+        public ContarVotoEspontaneo() {
+        }
     }
 
-    public int getId() { return id; }
-    public String getResposta() { return resposta; }
+    public int getId() {
+        return id;
+    }
 
-    public void setId(int id) { this.id = id; }
-    public void setResposta(String resposta) { this.resposta = resposta; }
+    public String getResposta() {
+        return resposta;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public void setResposta(String resposta) {
+        this.resposta = resposta;
+    }
 }

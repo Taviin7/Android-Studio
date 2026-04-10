@@ -72,11 +72,12 @@ public class EleitoresActivity extends AppCompatActivity {
         card.addView(linha("Data/hora: " + sdf.format(new Date(e.getTimestamp())), false));
         card.addView(linha("Localização: " + formatarGps(e.getLatitude(), e.getLongitude()), false));
 
+        /*
         String problemas = e.getProblemas() != null && !e.getProblemas().isEmpty()
                 ? String.join(", ", e.getProblemas())
                 : "—";
         card.addView(linha("Problemas: " + problemas, false));
-
+        */
         return card;
     }
 

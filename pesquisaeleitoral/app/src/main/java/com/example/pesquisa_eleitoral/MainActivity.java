@@ -25,19 +25,10 @@ public class MainActivity extends AppCompatActivity {
         });
 
         //Variáveis do Layout
-        Button btn_pesquisaEstimulada = findViewById(R.id.btn_pesquisaEstimulada);
-        Button btn_pesquisaEspontanea = findViewById(R.id.btn_pesquisaEspontanea);
+        Button btn_iniciarPesquisa = findViewById(R.id.btn_iniciarPesquisa);
         Button btn_finalizar = findViewById(R.id.btn_finalizar);
 
-        btn_pesquisaEstimulada.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i = new Intent(MainActivity.this, PesquisaEstimuladaActivity.class);
-                startActivity(i);
-            }
-        });
-
-        btn_pesquisaEspontanea.setOnClickListener(new View.OnClickListener() {
+        btn_iniciarPesquisa.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(MainActivity.this, PesquisaEspontaneaActivity.class);

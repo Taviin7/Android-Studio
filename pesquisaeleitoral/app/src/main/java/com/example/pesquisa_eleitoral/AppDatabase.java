@@ -7,12 +7,13 @@ import androidx.room.Room;
 import androidx.room.RoomDatabase;
 import androidx.room.TypeConverters;
 
-@Database(entities = {Entrevista.class, Voto.class, VotoEspontaneo.class}, version = 4, exportSchema = false)
+@Database(entities = {Usuario.class, Entrevista.class, Voto.class, VotoEspontaneo.class}, version = 5, exportSchema = false)
 @TypeConverters(Converters.class)
 public abstract class AppDatabase extends RoomDatabase {
 
     private static AppDatabase instance;
 
+    public abstract UsuarioDAO usuarioDAO();
     public abstract EntrevistaDAO entrevistaDao();
     public abstract VotoDAO votoDAO();
     public abstract VotoEspontaneoDAO votoEspontaneoDAO();

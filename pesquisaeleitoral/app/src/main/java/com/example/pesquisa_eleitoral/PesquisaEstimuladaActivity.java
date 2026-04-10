@@ -66,7 +66,7 @@ public class PesquisaEstimuladaActivity extends AppCompatActivity {
             RadioButton selected = findViewById(selectedId);
             int candidatoIdReal = (int) selected.getTag(); // Pegamos o ID da Tag
 
-            // RECUPERA a entrevista que veio da Pesquisa Espontânea
+            // Recupera a entrevista que veio da Pesquisa Espontânea
             Entrevista entrevista = (Entrevista) getIntent().getSerializableExtra("entrevista");
             if (entrevista == null) {
                 entrevista = new Entrevista();

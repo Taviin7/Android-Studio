@@ -44,7 +44,7 @@ public class PesquisaEspontaneaActivity extends AppCompatActivity {
             entrevista.setProblemas(new ArrayList<>());
             entrevista.setTimestamp(System.currentTimeMillis());
 
-            Intent i = new Intent(this, DadosEleitoresActivity.class);
+            Intent i = new Intent(this, PesquisaEstimuladaActivity.class);
             i.putExtra("entrevista", entrevista);
             i.putExtra("candidatoId", -1);
             startActivity(i);

@@ -1,5 +1,6 @@
 package com.example.pesquisa_eleitoral;
 
+import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
@@ -17,15 +18,21 @@ public class Entrevista implements Serializable {
 
     @Ignore
     private String votoEspontaneo; // Usado apenas para transição entre telas, não salvo aqui por sigilo
-
+    @ColumnInfo(name = "ent_problemas")
     private List<String> problemas;
+    @ColumnInfo(name = "ent_nome")
     private String nome;
+    @ColumnInfo(name = "ent_celular")
     private String celular;
+    @ColumnInfo(name = "ent_timestamp")
     private long timestamp;
+    @ColumnInfo(name = "ent_latitude")
     private double latitude;
+    @ColumnInfo(name = "ent_longitude")
     private double longitude;
 
-    public Entrevista() {}
+    public Entrevista() {
+    }
 
     public Entrevista(List<String> problemas,
                       String nome,
@@ -42,27 +49,67 @@ public class Entrevista implements Serializable {
     }
 
     // Getters e Setters
-    public int getId() { return id; }
-    public void setId(int id) { this.id = id; }
+    public int getId() {
+        return id;
+    }
 
-    public String getVotoEspontaneo() { return votoEspontaneo; }
-    public void setVotoEspontaneo(String votoEspontaneo) { this.votoEspontaneo = votoEspontaneo; }
+    public void setId(int id) {
+        this.id = id;
+    }
 
-    public List<String> getProblemas() { return problemas; }
-    public void setProblemas(List<String> problemas) { this.problemas = problemas; }
+    public String getVotoEspontaneo() {
+        return votoEspontaneo;
+    }
 
-    public String getNome() { return nome; }
-    public void setNome(String nome) { this.nome = nome; }
+    public void setVotoEspontaneo(String votoEspontaneo) {
+        this.votoEspontaneo = votoEspontaneo;
+    }
 
-    public String getCelular() { return celular; }
-    public void setCelular(String celular) { this.celular = celular; }
+    public List<String> getProblemas() {
+        return problemas;
+    }
 
-    public long getTimestamp() { return timestamp; }
-    public void setTimestamp(long timestamp) { this.timestamp = timestamp; }
+    public void setProblemas(List<String> problemas) {
+        this.problemas = problemas;
+    }
 
-    public double getLatitude() { return latitude; }
-    public void setLatitude(double latitude) { this.latitude = latitude; }
+    public String getNome() {
+        return nome;
+    }
 
-    public double getLongitude() { return longitude; }
-    public void setLongitude(double longitude) { this.longitude = longitude; }
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
+
+    public String getCelular() {
+        return celular;
+    }
+
+    public void setCelular(String celular) {
+        this.celular = celular;
+    }
+
+    public long getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(long timestamp) {
+        this.timestamp = timestamp;
+    }
+
+    public double getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
+    }
+
+    public double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
+    }
 }
