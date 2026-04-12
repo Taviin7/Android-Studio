@@ -1,10 +1,10 @@
-package com.example.pesquisa_eleitoral;
+package com.example.pesquisa_eleitoral.model;
 
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
-@Entity
+@Entity(tableName = "usuarios")
 public class Usuario {
 
     @PrimaryKey(autoGenerate = true)

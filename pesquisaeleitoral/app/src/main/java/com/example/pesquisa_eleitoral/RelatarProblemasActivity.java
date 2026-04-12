@@ -12,6 +12,8 @@ import android.widget.Toast;
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.pesquisa_eleitoral.model.Entrevista;
+
 import java.util.ArrayList;
 import java.util.List;
 

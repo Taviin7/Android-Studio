@@ -1,8 +1,10 @@
-package com.example.pesquisa_eleitoral;
+package com.example.pesquisa_eleitoral.dao;
 
 import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.Query;
+
+import com.example.pesquisa_eleitoral.model.VotoEspontaneo;
 
 import java.util.List;
 

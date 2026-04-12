@@ -11,17 +11,22 @@ import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresPermission;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.example.pesquisa_eleitoral.database.AppDatabase;
+import com.example.pesquisa_eleitoral.model.Entrevista;
+import com.example.pesquisa_eleitoral.model.ProblemaRelatado;
+import com.example.pesquisa_eleitoral.model.Voto;
+import com.example.pesquisa_eleitoral.model.VotoEspontaneo;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class DadosEleitoresActivity extends AppCompatActivity {
 
@@ -107,39 +112,52 @@ public class DadosEleitoresActivity extends AppCompatActivity {
 
         int candidatoId = getIntent().getIntExtra("candidatoId", -1);
 
-        // Configura os dados da Entrevista (Pessoais)
+        // 1. Configura os dados da Entrevista (Pessoais)
         entrevista.setNome(nome);
         entrevista.setCelular(celular);
 
-        // 3 casas decimais = aprox. 100m
+        // Sigilo de Localização: 3 casas decimais (precisão de ~100 metros)
         double latReduzida = Math.round(latitude * 1000.0) / 1000.0;
         double lonReduzida = Math.round(longitude * 1000.0) / 1000.0;
         entrevista.setLatitude(latReduzida);
         entrevista.setLongitude(lonReduzida);
         entrevista.setTimestamp(System.currentTimeMillis());
 
-        // Extrai o voto espontâneo para salvar separado (Sigilo)
+        // 2. SIGILO ABSOLUTO: Extrai dados que não podem ser vinculados ao nome
+        
+        // Voto Espontâneo
         String textoEspontaneo = entrevista.getVotoEspontaneo();
-        entrevista.setVotoEspontaneo(null); // Limpa do objeto para não salvar na tabela 'entrevistas'
+        entrevista.setVotoEspontaneo(null); 
+
+        // Problemas Relatados: Salvaremos de forma anônima
+        List<String> listaProblemas = entrevista.getProblemas();
+        entrevista.setProblemas(new ArrayList<>()); // Limpa do objeto principal para não vincular ao nome no card
 
         new Thread(() -> {
             AppDatabase db = AppDatabase.getInstance(this);
 
-            // Salva perfil do eleitor
+            // Salva apenas PERFIL do eleitor (Nome, Celular, GPS, Data)
             db.entrevistaDao().inserir(entrevista);
 
-            // Salva voto estimulado de forma anônima
+            // Salva VOTO ESTIMULADO de forma anônima
             if (candidatoId != -1) {
                 db.votoDAO().inserir(new Voto(candidatoId));
             }
 
-            // Salva voto espontâneo de forma anônima na tabela específica
+            // Salva VOTO ESPONTÂNEO de forma anônima
             if (textoEspontaneo != null && !textoEspontaneo.isEmpty()) {
                 db.votoEspontaneoDAO().inserir(new VotoEspontaneo(textoEspontaneo));
             }
 
+            // Salva PROBLEMAS de forma anônima
+            if (listaProblemas != null) {
+                for (String desc : listaProblemas) {
+                    db.problemaDao().inserir(new ProblemaRelatado(desc));
+                }
+            }
+
             runOnUiThread(() -> {
-                Toast.makeText(this, "Pesquisa salva com sucesso (votos sigilosos)!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Pesquisa concluída com sigilo garantido!", Toast.LENGTH_SHORT).show();
                 Intent i = new Intent(this, MainActivity.class);
                 i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 startActivity(i);

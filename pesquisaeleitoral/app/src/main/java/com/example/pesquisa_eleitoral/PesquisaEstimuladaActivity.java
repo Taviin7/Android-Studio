@@ -14,6 +14,10 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.example.pesquisa_eleitoral.database.AppDatabase;
+import com.example.pesquisa_eleitoral.model.Candidato;
+import com.example.pesquisa_eleitoral.model.Entrevista;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,22 +41,23 @@ public class PesquisaEstimuladaActivity extends AppCompatActivity {
 
         RadioGroup radioGroup = findViewById(R.id.radioGroupCandidatos);
 
-        // Lista de candidatos
-        List<Candidato> candidatos = new ArrayList<>();
-        candidatos.add(new Candidato(1, "Jorge Amado",  "Partido ML"));
-        candidatos.add(new Candidato(2, "Caio Cássio",  "Partido AMZ"));
-        candidatos.add(new Candidato(3, "Luiza Albergue",  "Partido ALX"));
-        candidatos.add(new Candidato(ID_BRANCO,  "Branco",  ""));
-        candidatos.add(new Candidato(ID_NULO,    "Nulo",    ""));
-        candidatos.add(new Candidato(ID_NAO_SEI, "Não sei", ""));
+        // Busca candidatos do banco de dados
+        new Thread(() -> {
+            AppDatabase db = AppDatabase.getInstance(this);
+            List<Candidato> candidatosDoBanco = db.candidatoDao().buscarTodos();
 
-        for (Candidato c : candidatos) {
-            RadioButton rb = new RadioButton(this);
-            rb.setId(View.generateViewId());
-            rb.setTag(c.getId()); // O ID real do candidato fica na Tag
-            rb.setText(c.getNome() + (c.getPartido().isEmpty() ? "" : " - " + c.getPartido()));
-            radioGroup.addView(rb);
-        }
+            runOnUiThread(() -> {
+                // Adiciona candidatos vindos do banco
+                for (Candidato c : candidatosDoBanco) {
+                    adicionarRadioButton(radioGroup, c.getId(), c.getNome(), c.getPartido());
+                }
+
+                // Adiciona opções especiais
+                adicionarRadioButton(radioGroup, ID_BRANCO, "Branco", "");
+                adicionarRadioButton(radioGroup, ID_NULO, "Nulo", "");
+                adicionarRadioButton(radioGroup, ID_NAO_SEI, "Não sei", "");
+            });
+        }).start();
 
         Button btn_confirmar = findViewById(R.id.btn_confirmar);
         btn_confirmar.setOnClickListener(v -> {
@@ -64,9 +69,8 @@ public class PesquisaEstimuladaActivity extends AppCompatActivity {
             }
 
             RadioButton selected = findViewById(selectedId);
-            int candidatoIdReal = (int) selected.getTag(); // Pegamos o ID da Tag
+            int candidatoIdReal = (int) selected.getTag();
 
-            // Recupera a entrevista que veio da Pesquisa Espontânea
             Entrevista entrevista = (Entrevista) getIntent().getSerializableExtra("entrevista");
             if (entrevista == null) {
                 entrevista = new Entrevista();
@@ -78,5 +82,14 @@ public class PesquisaEstimuladaActivity extends AppCompatActivity {
             i.putExtra("entrevista", entrevista);
             startActivity(i);
         });
+    }
+
+    private void adicionarRadioButton(RadioGroup group, int id, String nome, String partido) {
+        RadioButton rb = new RadioButton(this);
+        rb.setId(View.generateViewId());
+        rb.setTag(id);
+        String texto = nome + (partido != null && !partido.isEmpty() ? " - " + partido : "");
+        rb.setText(texto);
+        group.addView(rb);
     }
 }

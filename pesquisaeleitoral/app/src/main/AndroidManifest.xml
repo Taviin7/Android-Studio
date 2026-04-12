@@ -2,7 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <!-- Permissões para usar GPS -->
+    <!-- Permissão para acessar a internet, para obter a cidade do entrevistado -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <!-- Permissão para acessar a localização do usuário -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
@@ -17,7 +19,7 @@
         android:theme="@style/Theme.Pesquisaeleitoral">
         
         <activity
-            android:name=".EleitoresActivity"
+            android:name=".SplashActivity"
             android:exported="false" />
         <activity
             android:name=".DadosEleitoresActivity"
@@ -44,7 +46,7 @@
             android:name=".MainActivity"
             android:exported="false" />
         <activity
-            android:name=".SplashActivity"
+            android:name=".EleitoresActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

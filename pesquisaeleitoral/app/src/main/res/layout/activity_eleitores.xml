@@ -3,8 +3,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="#F5F5F5">
+    android:orientation="vertical" >
 
     <TextView
         android:layout_width="match_parent"
@@ -14,7 +13,7 @@
         android:textStyle="bold"
         android:padding="16dp"
         android:background="#302681"
-        android:textColor="@color/white" />
+        android:textColor="@color/white"  />
 
     <ScrollView
         android:layout_width="match_parent"

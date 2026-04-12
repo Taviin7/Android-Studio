@@ -1,4 +1,4 @@
-package com.example.pesquisa_eleitoral;
+package com.example.pesquisa_eleitoral.database;
 
 import androidx.room.TypeConverter;
 
