@@ -18,16 +18,19 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
+        
+        // Ajusta o padding para evitar sobreposição com as barras de sistema
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
 
-        //Variáveis do Layout
+        // Variáveis do Layout
         Button btn_iniciarPesquisa = findViewById(R.id.btn_iniciarPesquisa);
         Button btn_finalizar = findViewById(R.id.btn_finalizar);
 
+        // Inicia o fluxo da pesquisa começando pela etapa Espontânea
         btn_iniciarPesquisa.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -36,6 +39,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        // Retorna para a tela de Login e encerra a sessão atual
         btn_finalizar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

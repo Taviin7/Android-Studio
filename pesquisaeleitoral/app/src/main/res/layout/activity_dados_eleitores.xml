@@ -17,7 +17,7 @@
         tools:layout_editor_absoluteY="-239dp">
 
         <TextView
-            android:id="@+id/tvGps"
+            android:id="@+id/tv_gps"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingBottom="12dp"
@@ -26,20 +26,44 @@
             android:textSize="12sp" />
 
         <EditText
-            android:id="@+id/etNome"
+            android:id="@+id/et_nome"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="48dp"
             android:layout_marginBottom="12dp"
             android:hint="Nome do entrevistado"
             android:inputType="textPersonName" />
 
         <EditText
-            android:id="@+id/etCelular"
+            android:id="@+id/et_celular"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="48dp"
             android:layout_marginBottom="24dp"
             android:hint="Celular"
             android:inputType="phone" />
+
+        <TextView
+            android:id="@+id/tv_avisoGps"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
+            android:text="ATENÇÃO: sua localização, data e hora da entrevista serão registradas"
+            android:textAlignment="center"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/tv_anonimato"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="25dp"
+            android:textAlignment="center"
+            android:text="Se preferir não se identificar, utilize o botão 'Salvar' sem preencher os campos acima."
+            android:textColor="#BD0323"
+            android:textSize="16dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.498"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView9" />
 
         <Button
             android:id="@+id/btn_salvar"
@@ -48,6 +72,13 @@
             android:text="Salvar entrevista"
             android:backgroundTint="#302681"
             android:textColor="@color/white" />
+
+        <ImageView
+            android:id="@+id/img_logoLogin"
+            android:layout_width="wrap_content"
+            android:layout_height="268dp"
+            android:layout_marginTop="90dp"
+            app:srcCompat="@drawable/maxresdefault_removebg_preview" />
 
     </LinearLayout>
 

@@ -1,6 +1,5 @@
 package com.example.pesquisa_eleitoral;
 
-import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.Gravity;
@@ -26,6 +25,7 @@ import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
 import com.github.mikephil.charting.formatter.ValueFormatter;
 import com.github.mikephil.charting.utils.ColorTemplate;
+import com.google.android.material.color.MaterialColors;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,11 +38,9 @@ public class ResultadoPesquisaActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // 1. Habilita o modo EdgeToEdge
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_resultado_pesquisa);
 
-        // 2. Configura os Insets para respeitar a barra de status
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
@@ -56,16 +54,13 @@ public class ResultadoPesquisaActivity extends AppCompatActivity {
     private void carregarDados() {
         new Thread(() -> {
             AppDatabase db = AppDatabase.getInstance(this);
-
-            int totalEntrevistas = db.entrevistaDao().buscarTodas().size();
+            int totalEntrevistas = db.entrevistaDao().contarTotal();
             List<Voto.ContarVotos> estimulados = db.votoDAO().contarVotos();
             List<VotoEspontaneo.ContarVotoEspontaneo> espontaneos = db.votoEspontaneoDAO().contar();
             List<ProblemaRelatado.ContarProblemas> problemas = db.problemaDao().contar();
             List<Candidato> listaCandidatos = db.candidatoDao().buscarTodos();
 
-            runOnUiThread(() -> {
-                exibirResultados(totalEntrevistas, estimulados, espontaneos, problemas, listaCandidatos);
-            });
+            runOnUiThread(() -> exibirResultados(totalEntrevistas, estimulados, espontaneos, problemas, listaCandidatos));
         }).start();
     }
 
@@ -76,11 +71,10 @@ public class ResultadoPesquisaActivity extends AppCompatActivity {
                                   List<Candidato> listaCandidatos) {
         container.removeAllViews();
 
-        adicionarTitulo("RELATÓRIO DE PESQUISA ELEITORAL", 22, Color.BLACK);
+        adicionarTitulo("RELATÓRIO DE PESQUISA ELEITORAL", 22);
         adicionarSubtitulo("Total de entrevistados: " + total);
 
-        // --- SEÇÃO ESTIMULADA ---
-        adicionarTitulo("1. PESQUISA ESTIMULADA", 18, Color.BLUE);
+        adicionarTitulo("1. PESQUISA ESTIMULADA", 18);
         if (estimulados.isEmpty()) {
             adicionarTexto("Sem dados.");
         } else {
@@ -88,8 +82,7 @@ public class ResultadoPesquisaActivity extends AppCompatActivity {
             container.addView(chartEstimulado);
         }
 
-        // --- SEÇÃO ESPONTÂNEA ---
-        adicionarTitulo("2. PESQUISA ESPONTÂNEA", 18, Color.parseColor("#388E3C"));
+        adicionarTitulo("2. PESQUISA ESPONTÂNEA", 18);
         if (espontaneos.isEmpty()) {
             adicionarTexto("Sem dados.");
         } else {
@@ -99,8 +92,7 @@ public class ResultadoPesquisaActivity extends AppCompatActivity {
             }
         }
 
-        // --- SEÇÃO PROBLEMAS ---
-        adicionarTitulo("3. MAIORES PROBLEMAS DA CIDADE", 18, Color.RED);
+        adicionarTitulo("3. MAIORES PROBLEMAS CITADOS", 18);
         if (problemas.isEmpty()) {
             adicionarTexto("Sem problemas relatados.");
         } else {
@@ -115,6 +107,9 @@ public class ResultadoPesquisaActivity extends AppCompatActivity {
         HorizontalBarChart barChart = new HorizontalBarChart(this);
         barChart.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 600));
 
+        // Cor de texto baseada no tema
+        int textColor = MaterialColors.getColor(barChart, android.R.attr.textColorPrimary);
+
         List<BarEntry> entries = new ArrayList<>();
         List<String> labels = new ArrayList<>();
 
@@ -128,6 +123,7 @@ public class ResultadoPesquisaActivity extends AppCompatActivity {
         BarDataSet dataSet = new BarDataSet(entries, "Intenção (%)");
         dataSet.setColors(ColorTemplate.MATERIAL_COLORS);
         dataSet.setValueTextSize(11f);
+        dataSet.setValueTextColor(textColor); // Cor do valor em cima da barra
         dataSet.setValueFormatter(new ValueFormatter() {
             @Override
             public String getFormattedValue(float value) {
@@ -136,23 +132,29 @@ public class ResultadoPesquisaActivity extends AppCompatActivity {
         });
 
         barChart.setData(new BarData(dataSet));
-        barChart.getXAxis().setValueFormatter(new IndexAxisValueFormatter(labels));
-        barChart.getXAxis().setPosition(XAxis.XAxisPosition.BOTTOM);
-        barChart.getXAxis().setGranularity(1f);
+
+        XAxis xAxis = barChart.getXAxis();
+        xAxis.setValueFormatter(new IndexAxisValueFormatter(labels));
+        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+        xAxis.setGranularity(1f);
+        xAxis.setTextColor(textColor); // Cor dos nomes dos candidatos
+
+        barChart.getAxisLeft().setTextColor(textColor); // Cor dos números do eixo
         barChart.getAxisLeft().setAxisMinimum(0f);
         barChart.getAxisLeft().setAxisMaximum(100f);
+
         barChart.getAxisRight().setEnabled(false);
         barChart.getDescription().setEnabled(false);
         barChart.getLegend().setEnabled(false);
         barChart.animateY(800);
+
         return barChart;
     }
 
-    private void adicionarTitulo(String texto, int tamanho, int cor) {
+    private void adicionarTitulo(String texto, int tamanho) {
         TextView tv = new TextView(this);
         tv.setText(texto);
         tv.setTextSize(tamanho);
-        tv.setTextColor(cor);
         tv.setTypeface(null, Typeface.BOLD);
         tv.setPadding(0, 40, 0, 16);
         tv.setGravity(Gravity.CENTER_HORIZONTAL);

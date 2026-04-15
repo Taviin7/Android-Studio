@@ -135,12 +135,12 @@ public class EleitoresActivity extends AppCompatActivity {
         // Usa a cor primária para o título do card
         if (negrito) {
             tv.setTypeface(null, android.graphics.Typeface.BOLD);
-            // Ssando a Context corretamente para obter a cor
+            // Usando a Context corretamente para obter a cor
             int colorPrimary = com.google.android.material.color.MaterialColors.getColor(tv, com.google.android.material.R.attr.colorOnBackground);
             tv.setTextColor(colorPrimary);
             tv.setTextSize(16f);
         } else {
-            // Ssando a View para obter a cor do texto padrão
+            // Usando a View para obter a cor do texto padrão
             int textColor = com.google.android.material.color.MaterialColors.getColor(tv, android.R.attr.textColorPrimary);
             tv.setTextColor(textColor);
         }

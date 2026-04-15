@@ -16,4 +16,7 @@ public interface EntrevistaDAO {
 
     @Query("SELECT * FROM entrevistas ORDER BY ent_id")
     List<Entrevista> buscarTodas();
+
+    @Query("SELECT COUNT(*) FROM entrevistas")
+    int contarTotal();
 }

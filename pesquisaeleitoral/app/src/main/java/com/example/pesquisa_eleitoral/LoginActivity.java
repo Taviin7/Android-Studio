@@ -21,9 +21,10 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
 
         EditText ed_usuario = findViewById(R.id.ed_usuario);
-            EditText ed_senha = findViewById(R.id.ed_senha);
+        EditText ed_senha = findViewById(R.id.ed_senha);
         Button btn_login = findViewById(R.id.bnt_login);
 
+        // Lógica de autenticação: verifica credenciais no banco e direciona para a tela Admin ou Pesquisador
         btn_login.setOnClickListener(v -> {
             String user = ed_usuario.getText().toString().trim();
             String pass = ed_senha.getText().toString().trim();
@@ -33,6 +34,7 @@ public class LoginActivity extends AppCompatActivity {
                 return;
             }
 
+            // Realiza a consulta de login em uma thread separada (exigência do Room)
             new Thread(() -> {
                 AppDatabase db = AppDatabase.getInstance(this);
                 Usuario usuario = db.usuarioDao().fazerLogin(user, pass);
@@ -40,6 +42,7 @@ public class LoginActivity extends AppCompatActivity {
                 runOnUiThread(() -> {
                     if (usuario != null) {
                         Intent i;
+                        // Direciona conforme o perfil do usuário
                         if ("ADMIN".equals(usuario.getTipo())) {
                             i = new Intent(this, MainAdminActivity.class);
                         } else {

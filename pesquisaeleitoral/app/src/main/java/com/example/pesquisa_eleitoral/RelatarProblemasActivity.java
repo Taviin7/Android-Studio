@@ -93,6 +93,7 @@ public class RelatarProblemasActivity extends AppCompatActivity {
             // Atualiza a entrevista
             entrevista.setProblemas(selecionados);
 
+            // Direciona para a próxima tela
             int candidatoId = getIntent().getIntExtra("candidatoId", -1);
             Intent i = new Intent(this, DadosEleitoresActivity.class);
             i.putExtra("candidatoId", candidatoId);

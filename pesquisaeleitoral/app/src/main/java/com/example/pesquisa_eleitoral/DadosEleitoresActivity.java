@@ -51,10 +51,11 @@ public class DadosEleitoresActivity extends AppCompatActivity {
             return insets;
         });
 
-        etNome = findViewById(R.id.etNome);
-        etCelular = findViewById(R.id.etCelular);
-        tvGps = findViewById(R.id.tvGps);
+        etNome = findViewById(R.id.et_nome);
+        etCelular = findViewById(R.id.et_celular);
+        tvGps = findViewById(R.id.tv_gps);
 
+        // Inicializa o cliente de localização para capturar o GPS do eleitor
         fusedClient = LocationServices.getFusedLocationProviderClient(this);
         obterLocalizacao();
 
@@ -62,6 +63,7 @@ public class DadosEleitoresActivity extends AppCompatActivity {
         btn_salvar.setOnClickListener(v -> salvar());
     }
 
+    // Verifica e solicita permissão de GPS ao usuário
     private void obterLocalizacao() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
@@ -73,6 +75,7 @@ public class DadosEleitoresActivity extends AppCompatActivity {
         buscarLocalizacao();
     }
 
+    // Busca a última localização conhecida do dispositivo
     private void buscarLocalizacao() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) return;
@@ -98,13 +101,14 @@ public class DadosEleitoresActivity extends AppCompatActivity {
         }
     }
 
+    // Processa o salvamento final da pesquisa, garantindo o sigilo dos votos
     private void salvar() {
         String nome = etNome.getText().toString().trim();
         String celular = etCelular.getText().toString().trim();
 
         if (nome.isEmpty() || celular.isEmpty()) {
-            Toast.makeText(this, "Preencha nome e celular.", Toast.LENGTH_SHORT).show();
-            return;
+            nome = "Anônimo";
+            celular = "Não informado";
         }
 
         Entrevista entrevista = (Entrevista) getIntent().getSerializableExtra("entrevista");
@@ -112,44 +116,42 @@ public class DadosEleitoresActivity extends AppCompatActivity {
 
         int candidatoId = getIntent().getIntExtra("candidatoId", -1);
 
-        // 1. Configura os dados da Entrevista (Pessoais)
+        // Configura os dados da Entrevista (Pessoais)
         entrevista.setNome(nome);
         entrevista.setCelular(celular);
 
-        // Sigilo de Localização: 3 casas decimais (precisão de ~100 metros)
+        // Localização com precisão reduzida para manter a privacidade do endereço exato
         double latReduzida = Math.round(latitude * 1000.0) / 1000.0;
         double lonReduzida = Math.round(longitude * 1000.0) / 1000.0;
         entrevista.setLatitude(latReduzida);
         entrevista.setLongitude(lonReduzida);
         entrevista.setTimestamp(System.currentTimeMillis());
 
-        // 2. SIGILO ABSOLUTO: Extrai dados que não podem ser vinculados ao nome
-        
-        // Voto Espontâneo
+        // Sigilo Absoluto: Separa os votos do perfil do eleitor antes de salvar
         String textoEspontaneo = entrevista.getVotoEspontaneo();
         entrevista.setVotoEspontaneo(null); 
 
-        // Problemas Relatados: Salvaremos de forma anônima
         List<String> listaProblemas = entrevista.getProblemas();
-        entrevista.setProblemas(new ArrayList<>()); // Limpa do objeto principal para não vincular ao nome no card
+        entrevista.setProblemas(new ArrayList<>()); 
 
+        // Salva os dados de forma estruturada e anônima no banco de dados
         new Thread(() -> {
             AppDatabase db = AppDatabase.getInstance(this);
 
-            // Salva apenas PERFIL do eleitor (Nome, Celular, GPS, Data)
+            // Salva apenas o "perfil" do eleitor
             db.entrevistaDao().inserir(entrevista);
 
-            // Salva VOTO ESTIMULADO de forma anônima
+            // Salva voto estimulado de forma anônima (sem vínculo com o eleitor)
             if (candidatoId != -1) {
                 db.votoDAO().inserir(new Voto(candidatoId));
             }
 
-            // Salva VOTO ESPONTÂNEO de forma anônima
+            // Salva voto espontâneo de forma anônima
             if (textoEspontaneo != null && !textoEspontaneo.isEmpty()) {
                 db.votoEspontaneoDAO().inserir(new VotoEspontaneo(textoEspontaneo));
             }
 
-            // Salva PROBLEMAS de forma anônima
+            // Salva os problemas relatados na tabela de estatísticas
             if (listaProblemas != null) {
                 for (String desc : listaProblemas) {
                     db.problemaDao().inserir(new ProblemaRelatado(desc));

@@ -1,54 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fillViewport="true">
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:background="?android:attr/windowBackground">
 
-    <LinearLayout
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Se a eleição fosse hoje, em quem você votaria?"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:paddingBottom="8dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="(Pesquisa estimulada)"
+        android:textSize="14sp"
+        android:textColor="?android:attr/textColorSecondary"
+        android:paddingBottom="16dp"/>
+
+    <!-- Lista de Candidatos usando RecyclerView com Material Design do item_candidato -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvCandidatos"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        tools:listitem="@layout/item_candidato" /> <!-- Ver o preview no Android Studio -->
+
+    <Button
+        android:id="@+id/btn_confirmar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="16dp">
+        android:text="Confirmar voto"
+        android:layout_marginTop="16dp"
+        android:padding="12dp"
+        android:backgroundTint="?attr/colorPrimary"
+        android:textColor="?attr/colorOnPrimary" />
 
-        <TextView
-            android:id="@+id/txtTitulo"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Se a eleição fosse hoje, em quem você votaria?"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:paddingBottom="12dp"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="(Pesquisa estimulada)"
-            android:textSize="14sp"
-            android:textColor="#666666"
-            android:paddingBottom="16dp"/>
-
-        <RadioGroup
-            android:id="@+id/radioGroupCandidatos"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"/>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="#DDDDDD"
-            android:layout_marginVertical="20dp"/>
-
-        <Button
-            android:id="@+id/btn_confirmar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Confirmar voto"
-            android:backgroundTint="#302681"
-            android:textColor="@color/white" />
-
-    </LinearLayout>
-
-</ScrollView>
+</LinearLayout>

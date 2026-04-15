@@ -27,7 +27,7 @@ import com.example.pesquisa_eleitoral.model.VotoEspontaneo;
         Candidato.class,
         ProblemaRelatado.class,
         Usuario.class
-}, version = 7, exportSchema = false)
+}, version = 8, exportSchema = false)
 @TypeConverters(Converters.class)
 public abstract class AppDatabase extends RoomDatabase {
 
