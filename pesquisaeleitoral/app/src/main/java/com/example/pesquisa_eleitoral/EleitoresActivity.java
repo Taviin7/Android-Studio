@@ -43,6 +43,8 @@ public class EleitoresActivity extends AppCompatActivity {
         LinearLayout container = findViewById(R.id.containerEleitores);
 
         // Busca todas as entrevistas do banco e resolve as cidades em background
+        // Crio uma nova Thread porque o Room proíbe chamadas na thread principal para garantir que
+        // a interface do usuário (UI) permaneça fluida e sem travamentos
         new Thread(() -> {
             List<Entrevista> entrevistas = AppDatabase.getInstance(this).entrevistaDao().buscarTodas();
 
@@ -51,6 +53,7 @@ public class EleitoresActivity extends AppCompatActivity {
                 cidadesResolvidas.add(obterCidade(e.getLatitude(), e.getLongitude()));
             }
 
+            // Voltar para a main thread para atualizar a UI
             runOnUiThread(() -> {
                 if (entrevistas.isEmpty()) {
                     TextView tv = new TextView(this);
@@ -74,7 +77,7 @@ public class EleitoresActivity extends AppCompatActivity {
     private View criarCard(int numero, Entrevista e, String cidade, SimpleDateFormat sdf) {
         // Usando MaterialCardView
         MaterialCardView card = new MaterialCardView(this);
-        
+
         // Configurações visuais do Card
         card.setRadius(dpToPx(12));
         card.setCardElevation(dpToPx(4));
@@ -83,7 +86,7 @@ public class EleitoresActivity extends AppCompatActivity {
         card.setStrokeColor(Color.LTGRAY);
 
         LinearLayout.LayoutParams cardParams = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT, 
+                LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT);
         cardParams.setMargins(0, 0, 0, dpToPx(8));
         card.setLayoutParams(cardParams);
@@ -136,8 +139,6 @@ public class EleitoresActivity extends AppCompatActivity {
         if (negrito) {
             tv.setTypeface(null, android.graphics.Typeface.BOLD);
             // Usando a Context corretamente para obter a cor
-            int colorPrimary = com.google.android.material.color.MaterialColors.getColor(tv, com.google.android.material.R.attr.colorOnBackground);
-            tv.setTextColor(colorPrimary);
             tv.setTextSize(16f);
         } else {
             // Usando a View para obter a cor do texto padrão

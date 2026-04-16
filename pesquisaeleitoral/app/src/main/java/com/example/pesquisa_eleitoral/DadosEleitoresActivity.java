@@ -106,9 +106,13 @@ public class DadosEleitoresActivity extends AppCompatActivity {
         String nome = etNome.getText().toString().trim();
         String celular = etCelular.getText().toString().trim();
 
-        if (nome.isEmpty() || celular.isEmpty()) {
+        if (nome.isEmpty() && celular.isEmpty()) {
             nome = "Anônimo";
             celular = "Não informado";
+        }
+        if (nome.isEmpty() || celular.isEmpty()) {
+            Toast.makeText(this, "Preencha os dois campos!", Toast.LENGTH_SHORT).show();
+            return;
         }
 
         Entrevista entrevista = (Entrevista) getIntent().getSerializableExtra("entrevista");
