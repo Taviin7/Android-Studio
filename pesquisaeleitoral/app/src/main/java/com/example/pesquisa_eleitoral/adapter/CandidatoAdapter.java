@@ -21,10 +21,10 @@ import java.util.List;
 
 /**
  * CandidatoAdapter - Gerencia a exibição da lista de candidatos na RecyclerView.
- * 
+ *
  * CONCEITO: Funciona como uma ponte entre a lista de objetos 'Candidato' e a interface visual.
- * FUNCIONAMENTO: Ele infla o layout de cada item, preenche os dados (nome, partido, foto) 
- * e controla a lógica de 'seleção única', permitindo que o usuário escolha apenas um 
+ * FUNCIONAMENTO: Ele infla o layout de cada item, preenche os dados (nome, partido, foto)
+ * e controla a lógica de 'seleção única', permitindo que o usuário escolha apenas um
  * candidato por vez através de cliques nos cards.
  */
 public class CandidatoAdapter extends RecyclerView.Adapter<CandidatoAdapter.CandidatoViewHolder> {
@@ -54,7 +54,7 @@ public class CandidatoAdapter extends RecyclerView.Adapter<CandidatoAdapter.Cand
     @Override
     public void onBindViewHolder(@NonNull CandidatoViewHolder holder, int position) {
         Candidato c = candidatos.get(position);
-        
+
         // Preenche os textos de Nome e Partido
         holder.txtNome.setText(c.getNome());
         holder.txtPartido.setText(c.getPartido());
@@ -82,11 +82,11 @@ public class CandidatoAdapter extends RecyclerView.Adapter<CandidatoAdapter.Cand
         holder.itemView.setOnClickListener(v -> {
             int oldPosition = selectedPosition;
             selectedPosition = holder.getAdapterPosition();
-            
+
             // Atualiza apenas os itens que mudaram de estado (o antigo e o novo selecionado) para performance
             notifyItemChanged(oldPosition);
             notifyItemChanged(selectedPosition);
-            
+
             // Notifica a Activity sobre o candidato escolhido
             if (listener != null) {
                 listener.onSelected(c.getId());
@@ -114,6 +114,7 @@ public class CandidatoAdapter extends RecyclerView.Adapter<CandidatoAdapter.Cand
         RadioButton radio;
         MaterialCardView card;
 
+        // Construtor: inicializa os componentes visuais do layout
         public CandidatoViewHolder(@NonNull View itemView) {
             super(itemView);
             txtNome = itemView.findViewById(R.id.txtNomeCandidato);

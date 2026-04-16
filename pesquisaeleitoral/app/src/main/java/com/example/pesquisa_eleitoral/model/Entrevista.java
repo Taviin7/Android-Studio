@@ -13,7 +13,7 @@ import java.util.List;
 
 @Entity(tableName = "entrevistas")
 @TypeConverters(Converters.class)
-public class Entrevista implements Serializable {
+public class Entrevista implements Serializable { // Serializable para passar entre activities
 
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "ent_id")
@@ -40,30 +40,71 @@ public class Entrevista implements Serializable {
     @ColumnInfo(name = "ent_longitude")
     private double longitude;
 
-    public Entrevista() {}
+    public Entrevista() {
+    }
 
     // Getters e Setters
-    public int getId() { return id; }
-    public void setId(int id) { this.id = id; }
+    public int getId() {
+        return id;
+    }
 
-    public String getVotoEspontaneo() { return votoEspontaneo; }
-    public void setVotoEspontaneo(String votoEspontaneo) { this.votoEspontaneo = votoEspontaneo; }
+    public void setId(int id) {
+        this.id = id;
+    }
 
-    public List<String> getProblemas() { return problemas; }
-    public void setProblemas(List<String> problemas) { this.problemas = problemas; }
+    public String getVotoEspontaneo() {
+        return votoEspontaneo;
+    }
 
-    public String getNome() { return nome; }
-    public void setNome(String nome) { this.nome = nome; }
+    public void setVotoEspontaneo(String votoEspontaneo) {
+        this.votoEspontaneo = votoEspontaneo;
+    }
 
-    public String getCelular() { return celular; }
-    public void setCelular(String celular) { this.celular = celular; }
+    public List<String> getProblemas() {
+        return problemas;
+    }
 
-    public long getTimestamp() { return timestamp; }
-    public void setTimestamp(long timestamp) { this.timestamp = timestamp; }
+    public void setProblemas(List<String> problemas) {
+        this.problemas = problemas;
+    }
 
-    public double getLatitude() { return latitude; }
-    public void setLatitude(double latitude) { this.latitude = latitude; }
+    public String getNome() {
+        return nome;
+    }
 
-    public double getLongitude() { return longitude; }
-    public void setLongitude(double longitude) { this.longitude = longitude; }
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
+
+    public String getCelular() {
+        return celular;
+    }
+
+    public void setCelular(String celular) {
+        this.celular = celular;
+    }
+
+    public long getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(long timestamp) {
+        this.timestamp = timestamp;
+    }
+
+    public double getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
+    }
+
+    public double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
+    }
 }

@@ -15,7 +15,8 @@ public class VotoEspontaneo {
     @ColumnInfo(name = "vte_resposta")
     private String resposta;
 
-    public VotoEspontaneo() {}
+    public VotoEspontaneo() {
+    }
 
     @Ignore
     public VotoEspontaneo(String resposta) {
@@ -27,12 +28,24 @@ public class VotoEspontaneo {
         public String resposta;
         public int total;
 
-        public ContarVotoEspontaneo() {}
+        public ContarVotoEspontaneo() {
+        }
     }
 
     // Getters e Setters
-    public int getId() { return id; }
-    public void setId(int id) { this.id = id; }
-    public String getResposta() { return resposta; }
-    public void setResposta(String resposta) { this.resposta = resposta; }
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getResposta() {
+        return resposta;
+    }
+
+    public void setResposta(String resposta) {
+        this.resposta = resposta;
+    }
 }

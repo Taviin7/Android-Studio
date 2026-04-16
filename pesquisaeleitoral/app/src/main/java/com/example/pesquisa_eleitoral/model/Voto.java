@@ -15,7 +15,8 @@ public class Voto {
     @ColumnInfo(name = "voto_candidato_id")
     private int candidatoId;
 
-    public Voto() {}
+    public Voto() {
+    }
 
     @Ignore
     public Voto(int candidatoId) {
@@ -27,12 +28,24 @@ public class Voto {
         public int candidatoId;
         public int total;
 
-        public ContarVotos() {}
+        public ContarVotos() {
+        }
     }
 
     // Getters e Setters
-    public int getId() { return id; }
-    public void setId(int id) { this.id = id; }
-    public int getCandidatoId() { return candidatoId; }
-    public void setCandidatoId(int candidatoId) { this.candidatoId = candidatoId; }
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public int getCandidatoId() {
+        return candidatoId;
+    }
+
+    public void setCandidatoId(int candidatoId) {
+        this.candidatoId = candidatoId;
+    }
 }

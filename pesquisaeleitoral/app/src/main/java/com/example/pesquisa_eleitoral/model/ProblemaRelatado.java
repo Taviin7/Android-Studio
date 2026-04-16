@@ -15,7 +15,8 @@ public class ProblemaRelatado {
     @ColumnInfo(name = "prb_descricao")
     private String descricao;
 
-    public ProblemaRelatado() {}
+    public ProblemaRelatado() {
+    }
 
     @Ignore
     public ProblemaRelatado(String descricao) {
@@ -27,12 +28,24 @@ public class ProblemaRelatado {
         public String descricao;
         public int total;
 
-        public ContarProblemas() {}
+        public ContarProblemas() {
+        }
     }
 
     // Getters e Setters
-    public int getId() { return id; }
-    public void setId(int id) { this.id = id; }
-    public String getDescricao() { return descricao; }
-    public void setDescricao(String descricao) { this.descricao = descricao; }
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getDescricao() {
+        return descricao;
+    }
+
+    public void setDescricao(String descricao) {
+        this.descricao = descricao;
+    }
 }

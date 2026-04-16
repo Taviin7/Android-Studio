@@ -21,7 +21,8 @@ public class Candidato {
     @ColumnInfo(name = "can_foto")
     private String foto; // Nome do arquivo em res/drawable (ex: "mickey")
 
-    public Candidato() {}
+    public Candidato() {
+    }
 
     @Ignore
     public Candidato(String nome, String partido, String foto) {
@@ -31,12 +32,35 @@ public class Candidato {
     }
 
     // Getters e Setters
-    public int getId() { return id; }
-    public void setId(int id) { this.id = id; }
-    public String getNome() { return nome; }
-    public void setNome(String nome) { this.nome = nome; }
-    public String getPartido() { return partido; }
-    public void setPartido(String partido) { this.partido = partido; }
-    public String getFoto() { return foto; }
-    public void setFoto(String foto) { this.foto = foto; }
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getNome() {
+        return nome;
+    }
+
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
+
+    public String getPartido() {
+        return partido;
+    }
+
+    public void setPartido(String partido) {
+        this.partido = partido;
+    }
+
+    public String getFoto() {
+        return foto;
+    }
+
+    public void setFoto(String foto) {
+        this.foto = foto;
+    }
 }

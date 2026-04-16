@@ -22,7 +22,7 @@ public class RelatarProblemasActivity extends AppCompatActivity {
     private LinearLayout layoutProblemas;
     private CheckBox cbOutro;
     private EditText edtOutro;
-    private static final int MAX_SELECOES = 3; // Define o número exato
+    private static final int MAX_SELECOES = 3; // Define o número exato de seleções
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,7 +40,7 @@ public class RelatarProblemasActivity extends AppCompatActivity {
         entrevista = (Entrevista) getIntent().getSerializableExtra("entrevista");
 
         // Lista de problemas
-        String[] problemas = {"Saúde", "Educação", "Segurança", "Transporte", "Corrupção", "Desemprego"};
+        String[] problemas = {"Saúde", "Educação", "Segurança", "Transporte", "Corrupção", "Desemprego", "Transparência", "Impostos", "Programas Sociais"};
 
         // Criar CheckBoxes dinamicamente
         for (String p : problemas) {
@@ -63,7 +63,7 @@ public class RelatarProblemasActivity extends AppCompatActivity {
         btn.setOnClickListener(v -> {
             List<String> selecionados = new ArrayList<>();
 
-            // 1. Percorre os checkboxes criados dinamicamente
+            // Percorre os checkboxes criados dinamicamente e adiciona os selecionados
             for (int i = 0; i < layoutProblemas.getChildCount(); i++) {
                 View view = layoutProblemas.getChildAt(i);
                 if (view instanceof CheckBox) {
